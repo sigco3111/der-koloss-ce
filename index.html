@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="google" content="notranslate" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>더 콜로스 — 브라우저 좀비 서바이벌 | 솔로 &amp; 협동</title>
+<meta name="description" content="더 콜로스 — 무료 팬 제작 브라우저 좀비 웨이브 서바이벌 게임. 솔로 플레이, 4인 협동, 음성 채팅, 팩어펀치, 분더바펜, 특전, 순간이동기 등을 지원합니다." />
+<meta name="keywords" content="더 콜로스, 데어 리제 팬 리메이크, 브라우저 좀비 게임, 웨이브 서바이벌, 멀티플레이어 좀비 게임, 협동 브라우저 게임, 팩어펀치, 분더바페, 레이건, 음성 채팅" />
+<meta name="author" content="sigco3111" />
+<meta name="creator" content="vesper.inc" />
+<meta name="publisher" content="sigco3111" />
+<meta name="application-name" content="Der Koloss" />
+<meta name="apple-mobile-web-app-title" content="Der Koloss" />
+<meta name="theme-color" content="#070b12" />
+<meta name="color-scheme" content="dark" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+<link rel="canonical" href="https://sigco3111.github.io/der-koloss-ce/" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:site_name" content="Der Koloss" />
+<meta property="og:title" content="더 콜로스 — 브라우저 좀비 서바이벌" />
+<meta property="og:description" content="함께 살아남으세요. 솔로 또는 4인 협동 음성 채팅으로 팩어펀치, 분더바펜, 특전, 순간이동기, 끝없는 좀비 웨이브를 플레이하세요." />
+<meta property="og:url" content="https://sigco3111.github.io/der-koloss-ce/" />
+<meta property="og:image" content="https://sigco3111.github.io/der-koloss-ce/assets/der-koloss-og-v06-courtyard-rev2-1200x630.png" />
+<meta property="og:image:secure_url" content="https://sigco3111.github.io/der-koloss-ce/assets/der-koloss-og-v06-courtyard-rev2-1200x630.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="업그레이드된 분더바펜으로 무장한 더 콜로스 군인 4명이 좀비 무리에 맞서 공장을 지키는 모습." />
+
+<!-- X / Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="더 콜로스 — 브라우저 좀비 서바이벌" />
+<meta name="twitter:description" content="함께 살아남으세요 — 무료 팬 제작 브라우저 좀비 게임에서 솔로 및 4인 협동으로." />
+<meta name="twitter:image" content="https://sigco3111.github.io/der-koloss-ce/assets/der-koloss-og-v06-courtyard-rev2-1200x630.png" />
+<meta name="twitter:image:alt" content="더 콜로스 군인 4명이 좀비 무리에 맞서 공장을 지키는 모습." />
+
+<!-- Search, answer engines and generative discovery -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "@id": "https://sigco3111.github.io/der-koloss-ce/#game",
+  "name": "더 콜로스",
+  "alternateName": "더 콜로스: 콜로수의 각성",
+  "url": "https://sigco3111.github.io/der-koloss-ce/",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://sigco3111.github.io/der-koloss-ce/assets/der-koloss-og-v06-courtyard-rev2-1200x630.png",
+    "width": 1200,
+    "height": 630,
+    "caption": "더 콜로스 브라우저 좀비 서바이벌 게임"
+  },
+  "description": "더 콜로스는 모던 웹 브라우저에서 즐기는 무료 팬 제작 웨이브 기반 좀비 서바이벌 게임입니다. 솔로 플레이와 음성 채팅을 지원하는 4인 온라인 협동 플레이, 팩어펀치 무기 업그레이드, 분더바펜, 특전, 순간이동기, 파워업, 트랩, 점증하는 라운드를 지원합니다.",
+  "genre": ["Zombie survival", "First-person shooter", "Cooperative multiplayer", "Wave survival"],
+  "gamePlatform": "Web browser",
+  "operatingSystem": "Any modern desktop operating system with a compatible web browser",
+  "applicationCategory": "Game",
+  "playMode": ["SinglePlayer", "MultiPlayer", "CoOp"],
+  "numberOfPlayers": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 4},
+  "isAccessibleForFree": true,
+  "inLanguage": "ko",
+  "author": {"@type": "Organization", "name": "vesper.inc", "url": "https://vesper.inc/"},
+  "publisher": {"@type": "Organization", "name": "vesper.inc", "url": "https://vesper.inc/"},
+  "isBasedOn": {"@type": "CreativeWork", "name": "The original Der Riese map"},
+  "copyrightNotice": "Fan-made tribute. Not affiliated with or endorsed by the original rights holders.",
+  "potentialAction": {
+    "@type": "PlayAction",
+    "target": { "@type": "EntryPoint", "urlTemplate": "https://sigco3111.github.io/der-koloss-ce/", "actionPlatform": "https://schema.org/DesktopWebPlatform" }
+  }
+}
+</script>
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>☠</text></svg>" />
+<!-- Fonts are self-hosted under assets/fonts (see that folder's LICENSE.txt);
+     the game has no external font dependency and runs fully offline. -->
+<link rel="preload" href="assets/fonts/staatliches-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/special-elite-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=10" />
+<!-- menu background plate; every rule inside is scoped to #menu-bg -->
+<link rel="stylesheet" href="menu-bg.css?v=1" />
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js" } }
+</script>
+<script src="./vendor/peerjs.min.js"></script>
+</head>
+<body>
+<canvas id="game-canvas"></canvas>
+
+<!-- full-screen fx overlays -->
+<div id="dmg-vignette"></div>
+<!-- Directional damage. js/fx.js drives this by setting, on #dmg-dir:
+       el.style.setProperty('--dmg-angle', <deg>)   0 = straight ahead, clockwise, 0..360
+       el.dataset.hit = String(++n)                 any changing value replays the arc
+     Nothing else is required; CSS owns the animation and the fade-out. -->
+<div id="dmg-dir" aria-hidden="true"><i class="dmg-arc"></i></div>
+<div id="health-pulse"></div>
+<div id="screen-flash"></div>
+
+<!-- ==================== HUD ==================== -->
+<div id="hud" class="hidden">
+  <div id="crosshair"><span class="ch-l"></span><span class="ch-r"></span><span class="ch-t"></span><span class="ch-b"></span><span class="ch-dot"></span></div>
+  <div id="hitmarker"><span></span><span></span><span></span><span></span></div>
+
+  <div id="vox-sub" class="hidden"></div>
+  <aside id="multiplayer-roster" class="hidden" aria-label="협동 스쿼드" aria-hidden="true">
+    <div class="squad-kicker">스쿼드</div>
+    <div id="multiplayer-roster-rows" role="list"></div>
+  </aside>
+  <div id="mic-indicator" class="hidden">🎙 말하는 중</div>
+  <div id="bottom-left">
+    <div class="round-block">
+      <div class="round-kicker" aria-hidden="true">라운드</div>
+      <div id="round"></div>
+    </div>
+    <div class="vitals-block">
+      <div class="vitals-kicker" aria-hidden="true">체력</div>
+      <div id="health-track" role="img" aria-label="체력"><div id="health-fill"></div><div id="health-tip"></div></div>
+    </div>
+    <div class="points-block">
+      <div class="points-kicker" aria-hidden="true">포인트</div>
+      <div class="points-row"><div id="points">500</div><div id="points-delta" aria-hidden="true"></div></div>
+    </div>
+    <div id="perk-icons"></div>
+  </div>
+
+  <div id="bottom-right">
+    <div id="monkey-count" class="hidden">🐵 원숭이 폭탄 × <span id="monkey-n">2</span> <em>— X키</em></div>
+    <div id="weapon-name">M1911</div>
+    <div id="ammo"><span class="mag">8</span><span class="sep">|</span><span class="reserve">80</span></div>
+    <div id="ammo-track" aria-hidden="true"><div id="ammo-fill"></div></div>
+    <div id="nade-row"><div id="grenades"></div><div id="nade-count">× 4</div></div>
+  </div>
+
+  <div id="drop-timers"></div>
+  <div id="wave-progress" class="hidden"></div>
+  <div id="pap-notice" class="hidden"></div>
+
+  <div id="minimap-frame" role="img" aria-label="공장 미니맵">
+    <canvas id="minimap" width="210" height="210" aria-hidden="true"></canvas>
+    <span class="minimap-tick n" aria-hidden="true"></span>
+    <span class="minimap-label" aria-hidden="true">바펜파브릭</span>
+  </div>
+  <div id="scope-overlay" class="hidden">
+    <div class="scope-ring"></div>
+    <div class="scope-h"></div>
+    <div class="scope-v"></div>
+    <div class="scope-tick t1"></div><div class="scope-tick t2"></div>
+    <div class="scope-tick t3"></div><div class="scope-tick t4"></div>
+  </div>
+
+  <div id="prompt-wrap">
+    <div id="prompt" class="hidden"></div>
+    <div id="prompt-bar" class="hidden"><div id="prompt-bar-fill"></div></div>
+  </div>
+
+  <div id="lock-hint" class="hidden">클릭하여 조준</div>
+
+  <div id="banner-sub"></div>
+  <div id="banner"></div>
+
+  <div id="revive-wrap" class="hidden">
+    <div id="revive-text">부활 중</div>
+    <div class="bar"><div id="revive-fill"></div></div>
+  </div>
+
+  <div id="down-overlay" class="hidden">
+    <div id="down-text">쓰러졌습니다</div>
+    <div class="bar bleed"><div id="bleed-fill"></div></div>
+    <div class="down-note" aria-hidden="true">버텨라 — 팀원이 부활시켜줄 수 있습니다</div>
+  </div>
+
+  <div id="scoreboard" class="hidden">
+    <h3>점수</h3>
+    <table>
+      <thead><tr><th>플레이어</th><th>처치</th><th>쓰러뜨림</th><th>부활</th><th>포인트</th></tr></thead>
+      <tbody id="score-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== MAIN MENU ==================== -->
+<div id="menu" class="screen">
+  <!-- Filters for the wordmark. Fractal noise is used instead of CSS gradients
+       because it has high spatial frequency — large soft gradients average out
+       to a flat tint on bright metal, noise actually reads as churning energy.
+       The <animate> tags are SMIL; no script is involved. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- energy crawling inside the glyphs -->
+      <filter id="fx-title-plasma" x="-6%" y="-22%" width="112%" height="144%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.013 0.05" numOctaves="2" seed="11" result="n">
+          <animate attributeName="baseFrequency" dur="23s"
+                   values="0.013 0.05;0.021 0.034;0.016 0.058;0.013 0.05" repeatCount="indefinite"/>
+        </feTurbulence>
+        <!-- crush the midtones so only hot cores survive: plasma, not fog -->
+        <feColorMatrix in="n" type="matrix" result="hot"
+          values="0 0 0 0 0.42
+                  0 0 0 0 0.86
+                  0 0 0 0 1
+                  2.1 0.9 0 0 -0.80"/>
+        <feComposite in="hot" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <!-- sparks along the cut: displace the glyph, then keep only the part
+           that falls OUTSIDE it, which leaves a crackling fringe on the edges -->
+      <filter id="fx-title-crackle" x="-14%" y="-46%" width="128%" height="192%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.14" numOctaves="1" seed="2" result="d">
+          <animate attributeName="seed" dur="1.1s" values="2;17;31;9;24;38;5;13"
+                   calcMode="discrete" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="d" scale="9" xChannelSelector="R" yChannelSelector="G" result="warp"/>
+        <feComposite in="warp" in2="SourceGraphic" operator="out" result="fringe"/>
+        <feGaussianBlur in="fringe" stdDeviation="0.5"/>
+      </filter>
+    </defs>
+  </svg>
+  <div class="menu-scene" aria-hidden="true">
+    <!-- Background plate: a silent, seamlessly looping shot of the machine
+         hall. The poster still is the clip's own first frame, so the hand-off
+         is invisible and a failed/blocked/reduced-motion video simply leaves
+         the still on screen. Styling lives in menu-bg.css, behaviour in
+         js/menu-bg.js; both are scoped to #menu-bg. -->
+    <div id="menu-bg" aria-hidden="true">
+      <img class="menu-bg-still" src="assets/menu/menu-bg-poster.webp" alt="" decoding="async" width="1280" height="720">
+      <video class="menu-bg-video" muted loop playsinline autoplay preload="metadata"
+             disablepictureinpicture disableremoteplayback tabindex="-1" width="1280" height="720">
+        <source src="assets/menu/menu-bg.webm" type="video/webm">
+        <source src="assets/menu/menu-bg.mp4" type="video/mp4">
+      </video>
+      <div class="menu-bg-scrim"></div>
+    </div>
+    <div class="scene-sky"></div>
+    <div class="scene-beam b1"></div>
+    <div class="scene-beam b2"></div>
+    <div class="scene-ridge"></div>
+    <svg id="skyline" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="#04050a">
+        <rect x="0" y="120" width="240" height="180"/>
+        <rect x="180" y="80" width="140" height="220"/>
+        <rect x="320" y="140" width="200" height="160"/>
+        <rect x="520" y="60" width="60" height="240"/>
+        <rect x="540" y="20" width="20" height="50"/>
+        <rect x="580" y="110" width="220" height="190"/>
+        <rect x="800" y="90" width="160" height="210"/>
+        <rect x="960" y="130" width="240" height="170"/>
+        <rect x="60" y="60" width="14" height="70"/>
+        <rect x="88" y="40" width="10" height="90"/>
+        <rect x="700" y="50" width="12" height="70"/>
+        <rect x="1020" y="70" width="16" height="70"/>
+      </g>
+      <g stroke="#04050a" stroke-width="3" fill="none">
+        <path d="M0,90 Q300,130 620,70 T1200,95"/>
+        <path d="M0,110 Q400,150 800,100 T1200,120"/>
+      </g>
+      <g fill="#c8873a" opacity="0.85">
+        <rect x="200" y="100" width="10" height="14" class="win"/>
+        <rect x="250" y="140" width="10" height="14" class="win d2"/>
+        <rect x="620" y="140" width="12" height="16" class="win d3"/>
+        <rect x="830" y="120" width="10" height="14" class="win d2"/>
+      </g>
+    </svg>
+    <div class="fog-layer f1"></div>
+    <div class="fog-layer f2"></div>
+    <div class="scene-dust d1"></div>
+    <div class="scene-dust d2"></div>
+    <div id="film-grain"></div>
+    <div id="film-scratch"></div>
+    <div id="menu-vignette"></div>
+  </div>
+  <div class="menu-corner tl">문서 번호 7 // 기밀</div>
+  <div class="menu-corner tr">니더슐레지엔 · 1945</div>
+  <div class="menu-corner br">업무상 사용에만 허가</div>
+  <div class="menu-inner">
+    <div class="menu-lead">
+      <div class="title-block">
+        <div class="title-top">— 웨이브 서바이벌 · 솔로 &amp; 협동 —</div>
+        <h1 class="notranslate" translate="no">더 콜로스<span class="title-glow" data-text="더 콜로스" aria-hidden="true"></span><span class="title-plasma" data-text="더 콜로스" aria-hidden="true"></span><span class="title-tear" data-text="더 콜로스" aria-hidden="true"></span></h1>
+        <div class="title-rule"><span></span><em>◆</em><span></span></div>
+        <div class="title-sub">콜로수가 깨어난다</div>
+        <div class="stamp">기밀</div>
+      </div>
+      <nav class="menu-buttons" aria-label="메인 메뉴">
+        <button id="btn-solo" class="mbtn primary" data-idx="01" data-hint="혼자 투입">솔로</button>
+        <button id="btn-host" class="mbtn" data-idx="02" data-hint="스쿼드 개설">로비 호스트</button>
+        <button id="btn-join" class="mbtn" data-idx="03" data-hint="코드 입력">로비 참가</button>
+        <button id="btn-char" class="mbtn" data-idx="04" data-hint="군인 선택">캐릭터</button>
+        <button id="btn-cheats" class="mbtn" data-idx="05" data-hint="경기 조작">치트 코드</button>
+        <button id="btn-options" class="mbtn" data-idx="06" data-hint="음향 · 영상 · 조작">옵션</button>
+        <div class="menu-more-wrap">
+          <button id="btn-more" class="mbtn" type="button" data-idx="07" data-hint="자료실 · 소개" aria-expanded="false" aria-controls="menu-more-links">더 보기</button>
+          <div id="menu-more-links" class="menu-more-links hidden">
+            <a class="mbtn menu-link menu-sub-link" href="/assets">에셋 자료실</a>
+            <a class="mbtn menu-link menu-sub-link" href="/about/">프로젝트 소개</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <aside class="menu-brief" aria-label="전투 수칙">
+      <div class="brief-head">
+        <span class="brief-kicker">전투 수칙</span>
+        <button id="btn-controls" class="brief-toggle" type="button" aria-expanded="false" aria-controls="menu-help">모든 조작</button>
+      </div>
+      <div class="menu-help" id="menu-help">
+        <span class="kp"><b>WASD</b> 이동</span><span class="kp"><b>마우스</b> 시선</span><span class="kp"><b>좌클릭</b> 발사</span><span class="kp"><b>우클릭/E</b> 조준</span><span class="kp"><b>R</b> 재장전</span><span class="kp"><b>1/2/Q</b> 무기</span><span class="kp"><b>V</b> 나이프</span><span class="kp"><b>G</b> 수류탄</span><span class="kp"><b>X</b> 원숭이</span><span class="kp"><b>I</b> 정찰</span><span class="kp"><b>T</b> 손전등</span><span class="kp"><b>F</b> 상호작용</span><span class="kp"><b>Space</b> 점프</span><span class="kp"><b>Shift</b> 질주</span><span class="kp"><b>C</b> 앉기</span><span class="kp"><b>Tab</b> 점수</span><span class="kp"><b>Esc</b> 일시정지</span>
+      </div>
+      <div class="brief-rule"></div>
+      <div class="menu-foot">Vesper가 만든 팬 트리뷰트. 어떤 퍼블리셔와도 관련이 없습니다.</div>
+    </aside>
+  </div>
+</div>
+
+<!-- ==================== CHARACTER SELECT ==================== -->
+<div id="charselect" class="screen hidden">
+  <div class="panel wide chars-panel">
+    <div class="panel-kicker">명단</div>
+    <h2>군인을 선택하세요</h2>
+    <p class="dim panel-lead">각 군인은 자신만의 음성과 대사, 전투 함성을 가지고 있습니다. 로비마다 한 명씩만 선택 가능합니다.</p>
+    <div id="char-cards"></div>
+    <div class="row-buttons">
+      <button id="btn-char-back" class="mbtn">뒤로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHARACTER PAGE ==================== -->
+<div id="charpage" class="screen hidden">
+  <div class="panel wide char-page">
+    <div class="char-page-left">
+      <div class="char-portrait-frame" role="img" aria-labelledby="char-name"><canvas id="char-portrait" width="96" height="96" aria-hidden="true"></canvas></div>
+      <div class="char-voice-head">음성 샘플</div>
+      <div id="char-voice-lines"></div>
+    </div>
+    <div class="char-page-right">
+      <div class="panel-kicker">인사 파일</div>
+      <h2 id="char-name"></h2>
+      <div id="char-role" class="char-role"></div>
+      <p id="char-bio" class="char-bio"></p>
+      <div class="char-section-head">특성</div>
+      <ul id="char-traits" class="char-traits"></ul>
+      <div class="char-section-head">대사 기록</div>
+      <div id="char-quotes" class="char-quotes"></div>
+      <div class="row-buttons">
+        <button id="btn-char-pick" class="mbtn primary">선택</button>
+        <button id="btn-char-page-back" class="mbtn">뒤로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHEAT CODES ==================== -->
+<div id="cheats" class="screen hidden">
+  <div class="panel wide" id="cheats-panel">
+    <div class="panel-kicker">기밀</div>
+    <h2>치트 코드</h2>
+    <p class="dim" id="cheats-note">솔로 및 호스트 로비 — 협동에서는 호스트의 코드가 모두에게 적용됩니다.</p>
+    <button id="btn-titan" class="mbtn titan">⚡ 타이탄 모드 — 한 번에: 무적 + 분더바펜 + 특전 + 포인트 + 전원 + 문 + 순간이동기 (골드 / 고스트 타운 제외)</button>
+    <div class="section-head"><span>수정자</span></div>
+    <div class="cheats-grid">
+      <label class="cheat"><input type="checkbox" id="cheat-papguns"><span class="box"></span><span class="txt">완전 무장 <em>팩어펀치된 무기 2종 + 보위 나이프로 스폰</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-wunder"><span class="box"></span><span class="txt">분더바펜 <em>레이건, 분더바페 DG-2, 원숭이 폭탄 2개로 스폰</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-perkaholic"><span class="box"></span><span class="txt">특전 중독 <em>네 가지 특전 모두 보유한 채로 스폰</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-goldguns"><span class="box"></span><span class="txt">골드 스탠다드 <em>모든 총이 골드로 빛남 — 팩어펀치하면 다이아몬드로</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-opensesame"><span class="box"></span><span class="txt">오픈 세사미 <em>모든 문이 열린 채로 시작</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-zero"><span class="box"></span><span class="txt">고스트 타운 <em>좀비 없음 — 평온하게 공장을 탐험</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-warbond"><span class="box"></span><span class="txt">전시 채권 <em>5만 포인트로 시작</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-god"><span class="box"></span><span class="txt">신 모드 <em>좀비가 당신에게 데미지를 줄 수 없음</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-power"><span class="box"></span><span class="txt">전원 서지 <em>전원이 켜진 채로 시작</em></span></label>
+      <label class="cheat"><input type="checkbox" id="cheat-tele"><span class="box"></span><span class="txt">풀 링크 <em>모든 순간이동기 연결 (팩어펀치 개방)</em></span></label>
+    </div>
+    <div class="loadout-row">
+      <div class="section-head"><span>커스텀 로드아웃</span></div>
+      <div class="cheat-lbl loadout-title"><em>이 총들로 스폰 — 완전 무장 / 분더바펜을 해제합니다.</em></div>
+      <div class="wpn-picks">
+        <div class="wpn-pick" data-slot="p1">
+          <label>주무기</label>
+          <input class="wpn-search" placeholder="필터 입력…" spellcheck="false">
+          <div class="wpn-list"></div>
+        </div>
+        <div class="wpn-pick" data-slot="p2">
+          <label>보조무기</label>
+          <input class="wpn-search" placeholder="필터 입력…" spellcheck="false">
+          <div class="wpn-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-head"><span>배치</span></div>
+    <div class="cheat-row">
+      <label class="cheat-lbl" for="cheat-round">시작 라운드</label>
+      <input id="cheat-round" type="number" min="1" max="40" value="1">
+      <label class="cheat-lbl" for="cheat-area">스폰 지역</label>
+      <select id="cheat-area">
+        <option value="mainframe">메인프레임 (기본)</option>
+        <option value="courtyard">안뜰</option>
+        <option value="factory">메인 공장</option>
+        <option value="teleA">발전기실 (텔레 A)</option>
+        <option value="chem">화학 실험실 (텔레 B)</option>
+      </select>
+      <span class="dim">커스텀 스폰은 자동으로 메인프레임까지의 경로를 엽니다.</span>
+    </div>
+    <div class="row-buttons">
+      <button id="btn-cheats-all" class="mbtn">모두 선택</button>
+      <button id="btn-cheats-none" class="mbtn">모두 해제</button>
+      <button id="btn-cheats-back" class="mbtn primary">뒤로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LOADING ==================== -->
+<div id="loading" class="screen overlay-dark hidden">
+  <div class="load-inner">
+    <div class="load-kicker">송신 중</div>
+    <div class="load-title">더 콜로스</div>
+    <div class="load-bar-wrap"><div id="load-bar"></div><div class="load-bar-scan" aria-hidden="true"></div></div>
+    <div class="load-meta">
+      <div class="load-hint">공장을 불러오는 중…</div>
+      <div class="load-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LOBBY ==================== -->
+<div id="lobby" class="screen hidden">
+  <div class="panel wide lobby-panel">
+    <div class="lobby-head">
+      <div>
+        <div class="panel-kicker">협동</div>
+        <h2>로비</h2>
+      </div>
+      <div class="lobby-code-row">
+        <div class="lobby-code-block">
+          <div class="lbl">로비 코드</div>
+          <div id="lobby-code">-----</div>
+        </div>
+        <div class="link-row">
+          <label class="lbl" for="lobby-link">초대 링크</label>
+          <div class="link-field">
+            <input id="lobby-link" readonly value="" aria-label="초대 링크" />
+            <button id="btn-copy-link" class="mbtn small">초대 링크 복사</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lobby-you">
+      <div class="lobby-char-row">
+        <span class="lbl">내 이름</span>
+        <input id="lobby-name" maxlength="14" spellcheck="false" autocomplete="off" aria-label="내 이름" />
+      </div>
+      <div class="lobby-char-row">
+        <span class="lbl">내 군인</span>
+        <button id="btn-lobby-char" class="mbtn small">선택</button>
+        <span id="lobby-char-name" class="lobby-char-name"></span>
+      </div>
+      <div class="lobby-char-row">
+        <span class="lbl">음성 채팅</span>
+        <button id="btn-lobby-mic" class="mbtn small">마이크: 켜짐</button>
+        <span id="lobby-voice-note" class="lobby-voice-note"></span>
+      </div>
+    </div>
+
+    <div class="section-head"><span>스쿼드</span><i class="section-rule"></i></div>
+    <div id="lobby-players"></div>
+    <div id="lobby-hint"></div>
+    <div class="row-buttons lobby-action-row">
+      <button id="btn-ready" class="mbtn primary lobby-primary-action">준비</button>
+      <button id="btn-start-game" class="mbtn lobby-ghost-action hidden" disabled>게임 시작</button>
+      <button id="btn-lobby-cheats" class="mbtn lobby-ghost-action">치트 코드</button>
+      <button id="btn-leave-lobby" class="mbtn danger lobby-ghost-action">나가기</button>
+    </div>
+    <div class="lobby-fullscreen-prompt">
+      <p id="lobby-fullscreen-note" class="lobby-fullscreen-note">최고의 조준과 성능을 위해 본 게임을 시작하기 전에 전체 화면으로 들어가는 것을 권장합니다.</p>
+      <button id="btn-lobby-fs" class="mbtn lobby-secondary-action fullscreen-callout" aria-describedby="lobby-fullscreen-note" aria-pressed="false">전체 화면</button>
+    </div>
+    <div class="lobby-note">호스트가 시작을 누르면 게임이 시작되며, 과반수의 플레이어가 준비되어야 합니다.</div>
+  </div>
+</div>
+
+<!-- ==================== SOLO FULLSCREEN PREFLIGHT ==================== -->
+<div id="solo-fs-modal" class="screen hidden">
+  <div class="panel solo-fs-panel" role="dialog" aria-modal="true" aria-labelledby="solo-fs-title">
+    <div class="panel-kicker lbl">경기 시작 전</div>
+    <h2 id="solo-fs-title">전체 화면 권장</h2>
+    <p class="dim">최고의 조준, 화면구성, 성능을 위해 더 콜로스를 전체 화면으로 플레이할 것을 권장합니다.</p>
+    <div class="row-buttons solo-fs-actions">
+      <button id="btn-solo-fs-toggle" class="mbtn primary fullscreen-callout" aria-pressed="false">전체 화면 진입</button>
+      <button id="btn-solo-fs-start" class="mbtn">전체 화면 없이 시작</button>
+      <button id="btn-solo-fs-back" class="mbtn danger">뒤로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JOIN MODAL ==================== -->
+<div id="join-modal" class="screen hidden">
+  <div class="panel join-panel">
+    <div class="panel-kicker">협동</div>
+    <h2>로비 참가</h2>
+    <p class="dim">친구에게서 받은 5자리 코드를 입력하거나 초대 링크를 사용하세요.</p>
+    <input id="join-code" maxlength="5" placeholder="코드" autocomplete="off" spellcheck="false" aria-label="로비 코드" />
+    <div class="row-buttons">
+      <button id="btn-join-go" class="mbtn primary">참가</button>
+      <button id="btn-join-cancel" class="mbtn">뒤로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== OPTIONS ==================== -->
+<div id="options" class="screen hidden">
+  <div class="panel wide options-panel">
+    <div class="panel-kicker">설정</div>
+    <h2>옵션</h2>
+    <div class="opt-sections">
+      <section class="opt-section">
+        <div class="section-head"><span>프로필</span><i class="section-rule"></i></div>
+        <div class="opt-grid">
+          <label for="opt-name">군인 이름</label>
+          <div><input id="opt-name" maxlength="14" /></div>
+        </div>
+      </section>
+
+      <section class="opt-section">
+        <div class="section-head"><span>조작</span><i class="section-rule"></i></div>
+        <div class="opt-grid">
+          <label for="opt-sens">마우스 감도 <span id="opt-sens-val" class="val"></span></label>
+          <input id="opt-sens" type="range" min="0.2" max="3" step="0.05" />
+
+          <label for="opt-invert">Y축 반전</label>
+          <div class="opt-toggle"><input id="opt-invert" type="checkbox" /><span class="opt-switch" aria-hidden="true"></span></div>
+        </div>
+      </section>
+
+      <section class="opt-section">
+        <div class="section-head"><span>영상</span><i class="section-rule"></i></div>
+        <div class="opt-grid">
+          <label for="opt-fov">시야각 <span id="opt-fov-val" class="val"></span></label>
+          <input id="opt-fov" type="range" min="70" max="110" step="1" />
+
+          <label for="opt-brightness">밝기 <span id="opt-brightness-val" class="val"></span></label>
+          <input id="opt-brightness" type="range" min="0.5" max="1.6" step="0.05" />
+
+          <label for="opt-motionblur">모션 블러 <span id="opt-motionblur-val" class="val"></span></label>
+          <input id="opt-motionblur" type="range" min="0" max="1.5" step="0.05" />
+
+          <label for="opt-quality">화질</label>
+          <select id="opt-quality">
+            <option value="low">낮음 (최대 FPS)</option>
+            <option value="medium">중간</option>
+            <option value="high">높음</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="opt-section">
+        <div class="section-head"><span>음향</span><i class="section-rule"></i></div>
+        <div class="opt-grid">
+          <label for="opt-master">마스터 볼륨 <span id="opt-master-val" class="val"></span></label>
+          <input id="opt-master" type="range" min="0" max="1" step="0.05" />
+
+          <label for="opt-sfx">효과음 볼륨 <span id="opt-sfx-val" class="val"></span></label>
+          <input id="opt-sfx" type="range" min="0" max="1" step="0.05" />
+
+          <label for="opt-music">배경음악 볼륨 <span id="opt-music-val" class="val"></span></label>
+          <input id="opt-music" type="range" min="0" max="1" step="0.05" />
+
+          <label for="opt-voice">좀비 음성 <span id="opt-voice-val" class="val"></span></label>
+          <input id="opt-voice" type="range" min="0" max="1" step="0.05" />
+
+          <label for="opt-voicechat">음성 채팅 (협동)</label>
+          <div class="opt-toggle"><input id="opt-voicechat" type="checkbox" /><span class="opt-switch" aria-hidden="true"></span></div>
+        </div>
+      </section>
+    </div>
+    <div class="row-buttons">
+      <button id="btn-options-back" class="mbtn primary">뒤로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAUSE ==================== -->
+<div id="pause" class="screen overlay-dark hidden">
+  <div class="pause-shell">
+    <div class="panel pause-panel">
+      <div class="panel-kicker">경기 중단</div>
+      <h2>일시정지</h2>
+      <div class="pause-stats" aria-live="polite">
+        <div class="pstat"><span class="pstat-lbl">라운드</span><span class="pstat-val" id="pause-round">—</span></div>
+        <div class="pstat"><span class="pstat-lbl">포인트</span><span class="pstat-val" id="pause-points">—</span></div>
+      </div>
+      <div class="row-buttons col">
+        <button id="btn-resume" class="mbtn primary">재개</button>
+        <button id="btn-pause-fs" class="mbtn">전체화면: 꺼짐</button>
+        <button id="btn-pause-mic" class="mbtn">마이크: 켜짐</button>
+        <button id="btn-pause-options" class="mbtn">옵션</button>
+        <button id="btn-quit" class="mbtn danger">메뉴로 나가기</button>
+      </div>
+      <p class="dim small-note">Esc — 재개 · 협동 모드에서는 당신이 떠나도 세계는 계속 움직입니다…</p>
+      <div class="pause-controls">
+        <span class="kp"><b>WASD</b> 이동</span><span class="kp"><b>좌클릭</b> 발사</span><span class="kp"><b>우클릭/E</b> 조준</span><span class="kp"><b>R</b> 재장전</span><span class="kp"><b>1/2/Q</b> 무기</span><span class="kp"><b>V</b> 나이프</span><span class="kp"><b>G</b> 수류탄</span><span class="kp"><b>X</b> 원숭이</span><span class="kp"><b>I</b> 정찰</span><span class="kp"><b>T</b> 손전등</span><span class="kp"><b>F</b> 상호작용</span><span class="kp"><b>Space</b> 점프</span><span class="kp"><b>Shift</b> 질주</span><span class="kp"><b>C</b> 앉기</span><span class="kp"><b>Tab</b> 점수</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOUCH DEVICE NOTICE ==================== -->
+<div id="device-gate" class="screen hidden" role="dialog" aria-labelledby="device-gate-title">
+  <div class="fog-layer f1"></div>
+  <div class="fog-layer f2"></div>
+  <div class="gate-grain" aria-hidden="true"></div>
+  <div class="gate-vignette" aria-hidden="true"></div>
+  <div class="gate-dossier">기기 점검 // 제한된 접근</div>
+  <main class="device-gate-card">
+    <div class="gate-kicker">현장 통지 · 01</div>
+    <div class="gate-mark" aria-hidden="true">×</div>
+    <h2 id="device-gate-title">데스크톱 필요</h2>
+    <p class="gate-lead">이 게임은 데스크톱과 컴퓨터에서만 이용 가능합니다.</p>
+    <p class="gate-copy">더 콜로스는 마우스 시선, 키보드 조작, 포인터 잠금, 대규모 3D 전장을 사용합니다. 데스크톱 컴퓨터로 돌아와 공장에 입장하세요.</p>
+    <nav class="gate-actions" aria-label="이용 가능한 페이지">
+      <a class="gate-action primary" href="/assets">에셋 자료실 열기</a>
+      <a class="gate-action" href="/about/">게임 소개 읽기</a>
+    </nav>
+    <button id="gate-audio" class="gate-audio" type="button" aria-pressed="false">▶ 메뉴 송신 재생</button>
+  </main>
+  <div class="gate-foot">공장이 기다리고 있습니다.</div>
+  <audio id="gate-soundtrack" loop preload="auto" src="assets/audio/menu_music.mp3"></audio>
+</div>
+
+<div id="toast" class="hidden"></div>
+
+<script type="module">
+  import { isMobileOrTablet } from './js/device-gate.js';
+  import { syncMenuMusicElement } from './js/site-audio.js?v=6';
+
+  if (isMobileOrTablet()) {
+    const gate = document.getElementById('device-gate');
+    const soundtrack = document.getElementById('gate-soundtrack');
+    const audioButton = document.getElementById('gate-audio');
+    const gateUi = new Audio('assets/audio/ui.mp3');
+    gate.classList.remove('hidden');
+    document.body.classList.add('touch-device-gated');
+
+    const syncAudioButton = () => {
+      const playing = !soundtrack.paused;
+      audioButton.setAttribute('aria-pressed', String(playing));
+      audioButton.textContent = playing ? '❚❚ PAUSE MENU TRANSMISSION' : '▶ PLAY MENU TRANSMISSION';
+    };
+    const tryPlay = () => soundtrack.play().then(syncAudioButton).catch(() => {});
+    soundtrack.volume = 0.42;
+    gateUi.volume = 0.5;
+    syncMenuMusicElement(soundtrack);
+    tryPlay();
+    audioButton.addEventListener('click', () => {
+      if (soundtrack.paused) tryPlay();
+      else { soundtrack.pause(); syncAudioButton(); }
+    });
+    gate.querySelectorAll('a, button').forEach((control) => control.addEventListener('click', (event) => {
+      if (control === audioButton) return;
+      gateUi.currentTime = 0;
+      gateUi.play().catch(() => {});
+      if (!control.matches('a') || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      setTimeout(() => { location.href = control.href; }, 75);
+    }));
+    document.addEventListener('pointerdown', () => { if (soundtrack.paused) tryPlay(); }, { once: true });
+  } else {
+    import('./js/main.js?v=6');
+  }
+</script>
+
+<!-- ============================================================
+     Presentation-only shell.
+     Purely additive: it never rewrites markup that js/main.js owns,
+     it only decorates it. Everything here degrades to "no decoration"
+     if it throws, and no element that main.js queries is renamed,
+     removed or re-parented.
+     ============================================================ -->
+<script type="module">
+  const MAX_SLOTS = 4;
+  const lobbyPlayers = document.getElementById('lobby-players');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---- lobby: turn main.js' flat rows into four real squad slots ---- */
+  function decorateLobby() {
+    if (!lobbyPlayers) return;
+    const rows = [...lobbyPlayers.querySelectorAll(':scope > .lobby-row')];
+    rows.forEach((row, i) => {
+      row.dataset.slot = String(i + 1);
+      row.classList.toggle('is-host', !!row.querySelector('.lobby-name')?.textContent.includes('👑'));
+      row.classList.toggle('is-you', !!row.querySelector('.lobby-name')?.textContent.includes('(나)') || row.querySelector('.lobby-name')?.textContent.includes('(you)'));
+      row.classList.toggle('is-ready', !!row.querySelector('.lobby-ready.yes'));
+      const nameEl = row.querySelector('.lobby-name');
+      if (nameEl && !row.querySelector('.lobby-avatar')) {
+        const av = document.createElement('span');
+        av.className = 'lobby-avatar';
+        av.setAttribute('aria-hidden', 'true');
+        av.style.setProperty('--slot-color', nameEl.style.color || '#e8e4d8');
+        av.textContent = (nameEl.textContent.replace(/[^A-Za-z0-9가-힣]/g, '')[0] || '?').toUpperCase();
+        row.insertBefore(av, row.firstChild);
+      }
+      const av = row.querySelector('.lobby-avatar');
+      if (av && nameEl) av.style.setProperty('--slot-color', nameEl.style.color || '#e8e4d8');
+      // icon-only controls main.js emits need accessible names
+      const mute = row.querySelector('.lobby-mute');
+      if (mute) {
+        const who = (nameEl?.textContent || '플레이어').replace(/[👑]/g, '').trim();
+        mute.setAttribute('aria-label', `${mute.classList.contains('muted') ? '음소거 해제' : '음소거'} ${who}`);
+      }
+      const spk = row.querySelector('.lobby-spk');
+      if (spk) { spk.setAttribute('aria-hidden', 'true'); spk.setAttribute('title', '음성 활동'); }
+      row.setAttribute('role', 'listitem');
+    });
+    lobbyPlayers.setAttribute('role', 'list');
+    lobbyPlayers.setAttribute('aria-label', '스쿼드 슬롯');
+    // trailing empty slots so the squad always reads as a four-seat squad
+    [...lobbyPlayers.querySelectorAll(':scope > .lobby-slot-empty')].forEach((n) => n.remove());
+    for (let i = rows.length; i < MAX_SLOTS; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'lobby-slot-empty';
+      slot.setAttribute('aria-hidden', 'true');
+      slot.innerHTML = '<span class="slot-num">' + String(i + 1).padStart(2, '0')
+        + '</span><span class="slot-text">빈 슬롯</span><span class="slot-cta">코드 공유</span>';
+      lobbyPlayers.appendChild(slot);
+    }
+  }
+  if (lobbyPlayers) {
+    decorateLobby();
+    new MutationObserver((records) => {
+      // ignore our own appends
+      if (records.every((r) => [...r.addedNodes].every((n) => n.nodeType === 1 && n.classList.contains('lobby-slot-empty')))) return;
+      decorateLobby();
+    }).observe(lobbyPlayers, { childList: true });
+  }
+
+  /* ---- field manual: full legend is opt-in, and never resizes the page ---- */
+  const brief = document.querySelector('.menu-brief');
+  const briefToggle = document.getElementById('btn-controls');
+  if (brief && briefToggle) {
+    const KEY = 'der-koloss-controls-open';
+    const setOpen = (open, persist) => {
+      brief.classList.toggle('open', open);
+      briefToggle.setAttribute('aria-expanded', String(open));
+      briefToggle.textContent = open ? '핵심 조작' : '모든 조작';
+      if (persist) { try { localStorage.setItem(KEY, open ? '1' : '0'); } catch { /* private mode */ } }
+    };
+    const roomy = matchMedia('(min-height: 1000px) and (min-width: 1101px)');
+    const stored = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
+    // Default open only where there is genuinely room; re-evaluate on resize
+    // until the player expresses a preference, which then wins forever.
+    const applyDefault = () => { if (stored() === null) setOpen(roomy.matches, false); };
+    setOpen(stored() === null ? roomy.matches : stored() === '1', false);
+    roomy.addEventListener('change', applyDefault);
+    briefToggle.addEventListener('click', () => setOpen(!brief.classList.contains('open'), true));
+  }
+
+  /* ---- pause: mirror the live round / points so the state stays legible ---- */
+  const pauseScreen = document.getElementById('pause');
+  const pauseRound = document.getElementById('pause-round');
+  const pausePoints = document.getElementById('pause-points');
+  if (pauseScreen && pauseRound && pausePoints) {
+    const syncPauseStats = () => {
+      if (pauseScreen.classList.contains('hidden')) return;
+      const r = (document.getElementById('round')?.textContent || '').trim();
+      const p = (document.getElementById('points')?.textContent || '').trim();
+      pauseRound.textContent = r || '—';
+      pausePoints.textContent = p ? Number(p).toLocaleString('en-US') : '—';
+    };
+    new MutationObserver(syncPauseStats).observe(pauseScreen, { attributes: true, attributeFilter: ['class'] });
+    syncPauseStats();
+  }
+
+  /* ---- character select: show which soldier is already yours ---- */
+  const charCards = document.getElementById('char-cards');
+  const charName = document.getElementById('lobby-char-name');
+  if (charCards && charName) {
+    const markCurrent = () => {
+      const mine = (charName.textContent || '').trim().toLowerCase();
+      charCards.querySelectorAll('.char-card').forEach((card) => {
+        const label = card.querySelector('.cc-name')?.textContent.trim().toLowerCase();
+        card.classList.toggle('is-current', !!mine && label === mine);
+      });
+    };
+    new MutationObserver(markCurrent).observe(charCards, { childList: true });
+    new MutationObserver(markCurrent).observe(charName, { childList: true, characterData: true, subtree: true });
+  }
+
+  /* ---- the code itself is the fastest thing to share: make it copyable ---- */
+  const codeEl = document.getElementById('lobby-code');
+  if (codeEl) {
+    codeEl.setAttribute('role', 'button');
+    codeEl.setAttribute('tabindex', '0');
+    codeEl.setAttribute('aria-label', '로비 코드 — 눌러 복사');
+    let copyT = null;
+    const copyCode = async () => {
+      const code = (codeEl.textContent || '').trim();
+      if (!code || code === '-----') return;
+      try { await navigator.clipboard.writeText(code); } catch { return; }
+      codeEl.classList.add('copied');
+      clearTimeout(copyT);
+      copyT = setTimeout(() => codeEl.classList.remove('copied'), 1600);
+    };
+    codeEl.addEventListener('click', copyCode);
+    codeEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyCode(); }
+    });
+  }
+
+  /* ---- lobby countdown presence: mirror main.js' hint text into a ring ---- */
+  const hint = document.getElementById('lobby-hint');
+  if (hint) {
+    const ring = document.createElement('div');
+    ring.className = 'lobby-countdown hidden';
+    ring.setAttribute('aria-hidden', 'true');
+    ring.innerHTML = '<span class="cd-num"></span><span class="cd-lbl">시작 중</span>';
+    hint.parentNode.insertBefore(ring, hint);
+    const num = ring.querySelector('.cd-num');
+    new MutationObserver(() => {
+      const m = /(\d+)초 후 시작/.exec(hint.textContent || '');
+      ring.classList.toggle('hidden', !m);
+      if (m && num.textContent !== m[1]) {
+        num.textContent = m[1];
+        if (!reduceMotion.matches) { ring.classList.remove('tick'); void ring.offsetWidth; ring.classList.add('tick'); }
+      }
+    }).observe(hint, { childList: true, characterData: true, subtree: true });
+  }
+
+  /* ---- sliders read as filled-to-value, not as a bare rail ---- */
+  const ranges = [...document.querySelectorAll('.opt-grid input[type="range"]')];
+  const paintRange = (el) => {
+    const min = Number(el.min || 0), max = Number(el.max || 100);
+    const pct = max > min ? ((Number(el.value) - min) / (max - min)) * 100 : 0;
+    el.style.setProperty('--fill', Math.max(0, Math.min(100, pct)) + '%');
+  };
+  ranges.forEach((el) => {
+    paintRange(el);
+    el.addEventListener('input', () => paintRange(el));
+  });
+  // main.js can rewrite the master slider (co-op auto-volume); repaint on open
+  const optionsScreen = document.getElementById('options');
+  if (optionsScreen) {
+    new MutationObserver(() => {
+      if (!optionsScreen.classList.contains('hidden')) ranges.forEach(paintRange);
+    }).observe(optionsScreen, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  /* ---- press feedback on every menu/panel button (compositor-only) ---- */
+  document.addEventListener('pointerdown', (e) => {
+    const b = e.target.closest?.('.mbtn, .char-card, .vline-btn, .wpn-item, .gate-action');
+    if (b) b.classList.add('is-pressed');
+  }, true);
+  const clearPress = () => document.querySelectorAll('.is-pressed').forEach((b) => b.classList.remove('is-pressed'));
+  document.addEventListener('pointerup', clearPress, true);
+  document.addEventListener('pointercancel', clearPress, true);
+
+  /* ---- keyboard users get focus rings; mouse users do not ---- */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') document.body.classList.add('kbd-nav');
+  }, true);
+  document.addEventListener('pointerdown', () => document.body.classList.remove('kbd-nav'), true);
+</script>
+
+<!-- Menu background plate: pauses the loop off-screen, honours reduced motion,
+     falls back to the poster still. Purely an enhancement of the markup above. -->
+<script type="module" src="./js/menu-bg.js?v=1"></script>
+</body>
+</html>
