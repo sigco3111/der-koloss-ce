@@ -1,4 +1,5 @@
 import { initSiteAudio } from './site-audio.js?v=6';
+import { t } from './i18n.js';
 
 initSiteAudio();
 
@@ -33,7 +34,7 @@ function setMenuOpen(open) {
   if (!nav || !menuToggle) return;
   nav.classList.toggle('menu-open', open);
   menuToggle.setAttribute('aria-expanded', String(open));
-  menuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  menuToggle.setAttribute('aria-label', open ? t('siteAriaMenuClose') : t('siteAriaMenuOpen'));
 }
 
 menuToggle?.addEventListener('click', () => setMenuOpen(!nav.classList.contains('menu-open')));

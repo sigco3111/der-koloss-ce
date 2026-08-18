@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { t } from './i18n.js';
 
 // Asset Archive interactions: model inspection, recordings, filters, and playback.
 import { WEAPONS, WeaponRig, getStats } from './weapons.js';
@@ -11,8 +12,14 @@ const audio = new Audio();
 audio.preload = 'metadata';
 
 const CLASS_NAMES = {
-  pistol: 'Pistols', smg: 'Submachine Guns', rifle: 'Rifles', shotgun: 'Shotguns',
-  lmg: 'Light Machine Guns', sniper: 'Sniper Rifles', launcher: 'Launchers', wonder: 'Wonder Weapons',
+  pistol: () => t('clsPistol'),
+  smg: () => t('clsSmg'),
+  rifle: () => t('clsRifle'),
+  shotgun: () => t('clsShotgun'),
+  lmg: () => t('clsLmg'),
+  sniper: () => t('clsSniper'),
+  launcher: () => t('clsLauncher'),
+  wonder: () => t('clsWonder'),
 };
 const CLASS_ORDER = ['pistol', 'smg', 'rifle', 'shotgun', 'lmg', 'sniper', 'launcher', 'wonder'];
 const weaponEntries = Object.entries(WEAPONS).filter(([, weapon]) => CLASS_ORDER.includes(weapon.cls));
@@ -261,11 +268,11 @@ requestAnimationFrame(renderFrame);
 function renderClassFilters() {
   const host = $('class-filters');
   host.replaceChildren();
-  [{ id: 'all', label: 'All' }, ...CLASS_ORDER.map((id) => ({ id, label: CLASS_NAMES[id] }))].forEach(({ id, label }) => {
+  [{ id: 'all', label: () => t('assetsClassAll') }, ...CLASS_ORDER.map((id) => ({ id, label: () => CLASS_NAMES[id]() }))].forEach(({ id, label }) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `filter-button${id === classFilter ? ' active' : ''}`;
-    button.textContent = label;
+    button.textContent = label();
     button.setAttribute('aria-pressed', String(id === classFilter));
     button.addEventListener('click', () => {
       classFilter = id;
@@ -280,7 +287,7 @@ function renderClassFilters() {
 function visibleWeapons() {
   return weaponEntries.filter(([, weapon]) => {
     const classMatch = classFilter === 'all' || weapon.cls === classFilter;
-    const haystack = `${weapon.name} ${weapon.pap?.name || ''} ${CLASS_NAMES[weapon.cls]}`.toLowerCase();
+    const haystack = `${weapon.name} ${weapon.pap?.name || ''} ${CLASS_NAMES[weapon.cls]()}`.toLowerCase();
     return classMatch && haystack.includes(searchTerm);
   });
 }
@@ -304,7 +311,7 @@ function renderWeaponGrid() {
     button.setAttribute('role', 'option');
     button.setAttribute('aria-selected', String(id === selectedId));
     button.dataset.weaponId = id;
-    button.innerHTML = `<b>${weapon.name}</b><span>${CLASS_NAMES[weapon.cls]} · ${weapon.pap?.name || 'No upgrade record'}</span>`;
+    button.innerHTML = `<b>${weapon.name}</b><span>${CLASS_NAMES[weapon.cls]()} · ${weapon.pap?.name || t('assetsNoUpgradeRecord')}</span>`;
     button.addEventListener('click', () => {
       cancelWeaponInteraction();
       selectedId = id;
@@ -360,13 +367,13 @@ function updateWeaponStats(pap) {
 function updateWeaponPresentation(pap, resetModel = true) {
   const weapon = WEAPONS[selectedId];
   const stats = getStats(selectedId, pap);
-  $('weapon-class').textContent = `${CLASS_NAMES[weapon.cls]} // ${pap ? 'Pack-a-Punch' : 'Standard issue'}`;
+  $('weapon-class').textContent = `${CLASS_NAMES[weapon.cls]()} // ${pap ? t('assetsPapTag') : t('assetsStandardTag')}`;
   $('weapon-name').textContent = pap ? weapon.pap?.name || weapon.name : weapon.name;
-  $('pap-name').textContent = pap ? `Original designation: ${weapon.name}` : `Upgrade: ${weapon.pap?.name || 'No record'}`;
+  $('pap-name').textContent = pap ? `${t('assetsOriginalDesignation')}: ${weapon.name}` : `${t('assetsUpgradeLabel')}: ${weapon.pap?.name || t('assetsWeaponNoRecord')}`;
   updateWeaponStats(pap);
   $('fire-instruction').textContent = stats.auto
-    ? `Press and hold to fire at ${stats.rpm} RPM. The weapon reloads automatically when empty.`
-    : 'Press to fire one shot. Reload manually or when the magazine is empty.';
+    ? t('assetsWeaponHelpAuto').replaceAll('{rpm}', String(stats.rpm))
+    : t('assetsWeaponHelp');
   if (resetModel) setModel(selectedId, pap, finishMode);
 }
 
@@ -534,9 +541,9 @@ function startFiring(pap, button, held = true, preserveFinish = false) {
   button.classList.add('firing');
   const finishLabel = preserveFinish && (finishMode === 'diamond' || finishMode === 'gold')
     ? `${finishMode} finish`
-    : (pap ? 'Pack-a-Punch' : CLASS_NAMES[weapon.cls]);
-  showLiveDock(`${pap ? weapon.pap?.name || weapon.name : weapon.name} // Live fire`, finishLabel);
-  setWeaponStatus(stats.auto ? 'FIRING // HOLD TO CONTINUE' : 'FIRING // SINGLE SHOT', 'firing');
+    : (pap ? t('assetsPapTag') : CLASS_NAMES[weapon.cls]());
+  showLiveDock(`${pap ? weapon.pap?.name || weapon.name : weapon.name} // ${t('assetsLiveFire')}`, finishLabel);
+  setWeaponStatus(stats.auto ? t('assetsFiringAuto') : t('assetsFiringSingle'), 'firing');
   fireNextRound();
 }
 
@@ -669,7 +676,7 @@ function renderGroup(host, title, sounds) {
   section.className = 'sound-group';
   const head = document.createElement('div');
   head.className = 'sound-group-head';
-  head.innerHTML = `<h3>${title}</h3><span class="sound-group-count">${String(sounds.length).padStart(2, '0')} RECORDINGS</span>`;
+  head.innerHTML = `<h3>${title}</h3><span class="sound-group-count">${String(sounds.length).padStart(2, '0')} ${t('assetsRecordings')}</span>`;
   const list = document.createElement('div');
   list.className = 'sound-list';
   sounds.forEach((sound) => list.append(makeSoundButton(sound)));

@@ -321,7 +321,7 @@ function bindCheatsUI() {
     saveCheats(); audio.play('buy');
     // GHOST TOWN is in the set, so "everything on" means no zombies. Say so —
     // otherwise an empty factory reads as the game being broken.
-    if (v) toast('Every code armed — including GHOST TOWN, so no zombies will spawn. Untick it for a normal run.');
+    if (v) toast(t('cheatsAllArmedGhostTown'));
   };
   $('btn-cheats-all').addEventListener('click', () => setAll(true));
   $('btn-cheats-none').addEventListener('click', () => setAll(false));
@@ -820,7 +820,7 @@ function boot() {
   $('btn-host').addEventListener('click', async () => {
     audio.play('ui');
     const btn = $('btn-host');
-    btn.disabled = true; btn.textContent = 'CREATING…';
+    btn.disabled = true; btn.textContent = t('hostCreating');
     try {
       app.net = new Net();
       wireNetLobby();
@@ -932,10 +932,10 @@ function boot() {
       saveOptions(options);
       updateLobbyVoiceUI();
       if (enabled) await enableLobbyVoice();
-      else toast('Voice chat disabled for this lobby — guests will not be prompted.');
+      else toast(t('toastVoiceDisabled'));
       return;
     }
-    if (!net.lobbyVoiceEnabled) { toast('Voice chat is disabled by the host.'); return; }
+    if (!net.lobbyVoiceEnabled) { toast(t('toastVoiceHostDisabled')); return; }
     if (!net.myStream) {
       net.voiceFailed = false; // retry after a denied permission
       updateLobbyVoiceUI();
