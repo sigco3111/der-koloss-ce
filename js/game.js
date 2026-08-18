@@ -766,7 +766,7 @@ export class Game {
         this._resetPapState();
         this._syncPapPresentation(0);
       }
-      this.hud.banner(`${String(name).toUpperCase()} LEFT THE GAME`, '#ff9944', 'Their soldier was removed');
+      this.hud.banner(t('hudBannerLeftGame').replaceAll('{name}', String(name).toUpperCase()), '#ff9944', t('hudBannerLeftGameSub'));
     };
     this.hostPlayerStates = new Map();
   }
@@ -2586,11 +2586,11 @@ export class Game {
       this.hud.prompt(null);
       const selfR = this.mode === 'solo' && p.selfReviveAvailable && this.qrSelfRevives > 0;
       const br = this.beingRevivedState();
-      this.hud.downUI(true, p.bleedout / CFG.BLEEDOUT_TIME, br ? `BEING REVIVED BY ${br.by.toUpperCase()}` : false, selfR, this.mode !== 'solo');
+      this.hud.downUI(true, p.bleedout / CFG.BLEEDOUT_TIME, br ? t('hudBeingRevivedBy').replaceAll('{name}', String(br.by).toUpperCase()) : false, selfR, this.mode !== 'solo');
       // The overlay headline already names the reviver; this bar carries the
       // progress, so it gets a complementary label rather than the same words.
-      if (selfR) this.hud.reviveUI(true, 'REVIVING YOURSELF…', p.selfReviveT / 8);
-      else if (br) this.hud.reviveUI(true, 'HOLD STILL', br.frac);
+      if (selfR) this.hud.reviveUI(true, t('hudRevivingSelf'), p.selfReviveT / 8);
+      else if (br) this.hud.reviveUI(true, t('promptHoldStill'), br.frac);
       else this.hud.reviveUI(false);
       return;
     }
@@ -2690,7 +2690,7 @@ export class Game {
       case 'door': {
         if (it.door.open) return null;
         if (it.door.id === 'd_pap') {
-          return this.teleLinks >= 3 ? null : { text: 'This door is sealed by a strange mechanism…' };
+          return this.teleLinks >= 3 ? null : { text: t('promptDoorSealed') };
         }
         return { text: `Press <b>F</b> — open door ${pts(it.door.cost)}`, hold: null };
       }
@@ -2710,7 +2710,7 @@ export class Game {
         if (p.perks.has(perk.id) || this.localPerkDrink) return null;
         if (perk.id !== 'qr' && !this.map.power.on) return { text: `${perk.name} — no power` };
         if (perk.id === 'qr' && this.mode === 'solo') {
-          if (this.qrSelfRevives <= 0) return { text: 'Quick Revive is depleted' };
+          if (this.qrSelfRevives <= 0) return { text: t('promptQrDepleted') };
           return { text: `Press <b>F</b> — Quick Revive ${pts(500)} <span class="dim">(${this.qrSelfRevives} left)</span>` };
         }
         return { text: `Press <b>F</b> — ${perk.name} ${pts(perk.price)}` };
@@ -2722,8 +2722,8 @@ export class Game {
         return { text: '…' };
       }
       case 'pap': {
-        if (this.teleLinks < 3) return { text: 'The machine is dormant…' };
-        if (this.papState.busy) return { text: this.papState.ready && this.papState.owner === p.id ? 'Press <b>F</b> — take upgraded weapon' : 'Upgrading…' };
+        if (this.teleLinks < 3) return { text: t('promptTelepadDormant') };
+        if (this.papState.busy) return { text: this.papState.ready && this.papState.owner === p.id ? t('promptPapTakeUpgraded') : t('promptPapUpgrading') };
         // Offering an upgrade you cannot buy is a worse prompt than no prompt:
         // the player presses F, nothing happens, and the machine looks broken.
         if (p.weapon?.pap) return { text: `${getStats(p.weapon.id, true).name} is already upgraded` };
@@ -2731,28 +2731,28 @@ export class Game {
       }
       case 'power': {
         if (this.map.power.on) return null;
-        return { text: 'Hold <b>F</b> — turn on the power', hold: INTERACT_HOLD.power };
+        return { text: t('promptPowerTurnOn'), hold: INTERACT_HOLD.power };
       }
       case 'tele': {
         const t = it.tele;
         const state = teleporterPromptState({ powerOn: this.map.power.on, charging: t.charging, cooldown: t.cooldown });
-        if (state === 'no-power') return { text: 'The teleporter has no power' };
-        if (state === 'charging') return { text: 'Teleporter charging… stand on the pad' };
+        if (state === 'no-power') return { text: t('promptTelepadNoPower') };
+        if (state === 'charging') return { text: t('promptTelepadCharging') };
         if (state === 'recharging') return { text: `Teleporter recharging… ${Math.ceil(t.cooldown)}s` };
         return { text: `Hold <b>F</b> — use teleporter`, hold: INTERACT_HOLD.tele };
       }
       case 'trap': {
         const t = it.trap;
-        if (!this.map.power.on) return { text: 'No power' };
-        if (t.active) return { text: 'Trap active!' };
+        if (!this.map.power.on) return { text: t('promptNoPower') };
+        if (t.active) return { text: t('promptTrapActive') };
         if (t.cd > 0) return { text: `Trap recharging… ${Math.ceil(t.cd)}s` };
         return { text: `Press <b>F</b> — activate electro-shock defense ${pts(1000)}` };
       }
       case 'song': {
-        return { text: audio.songPlaying ? 'Press <b>F</b> — stop the record' : 'Press <b>F</b> — play the record' };
+        return { text: audio.songPlaying ? t('promptStopRecord') : t('promptPlayRecord') };
       }
       case 'radio': {
-        return { text: 'Press <b>F</b> — play the old radio' };
+        return { text: t('promptPlayOldRadio') };
       }
     }
     return null;
@@ -3178,7 +3178,7 @@ export class Game {
         ps.ready = true;
         audio.play('pap_done', { pos: this.map.pap.pos });
         this.netSend({ t: 'pap_ready', pid: ps.owner, w: ps.weapon });
-        if (ps.owner === this.player.id || ps.mine) this.hud.papNotice('Your weapon is ready');
+        if (ps.owner === this.player.id || ps.mine) this.hud.papNotice(t('toastPapReady'));
       }
     } else if (ps.busy) {
       // owner takes on proximity + F; authority auto-grants after the ready timeout
@@ -3974,7 +3974,7 @@ export class Game {
           rp._downStash = { id: rp.weaponId, pap: rp.weaponPap };
           rp.authorizeWeapon('m1911', false, false);
         }
-        if (msg.pid !== p.id) this.hud.banner(`${(this.remotePlayers.get(msg.pid)?.name || 'TEAMMATE').toUpperCase()} IS DOWN`, '#ff9944');
+        if (msg.pid !== p.id) this.hud.banner(`${(this.remotePlayers.get(msg.pid)?.name || t('hudPlayer')).toUpperCase()} IS DOWN`, '#ff9944');
         break;
       }
       case 'dead': {
@@ -3991,7 +3991,7 @@ export class Game {
         if (msg.pid === p.id) {
           const known = this.remotePlayers.get(msg.by)?.name;
           this._beingRevived = {
-            by: known || 'A TEAMMATE',
+            by: known || t('hudPlayer'),
             at: this.time,
             need: clamp(Number(msg.need) || CFG.REVIVE_TIME, 0.5, 10),
           };
@@ -4053,7 +4053,7 @@ export class Game {
         break;
       }
       case 'return_lobby': {
-        if (!this.isAuthority) this.exit('lobby', String(msg.reason || 'The host ended the match.').slice(0, 120));
+        if (!this.isAuthority) this.exit('lobby', String(msg.reason || t('netHostEndedMatch')).slice(0, 120));
         break;
       }
       case 'box_spin_req': if (this.isAuthority && this.boxState.state === 'idle' && this._remoteNearVisible(from, this.map.box.pos, 3)) this.boxStartSpin(Array.isArray(msg.owned) ? msg.owned.filter((id) => WEAPONS[id]).slice(0, 2) : []); break;
@@ -4483,7 +4483,7 @@ export class Game {
 
   endMatchToLobby() {
     if (this.mode !== 'host') return false;
-    const reason = 'The host ended the match — everyone returned to the lobby.';
+    const reason = t('netHostEndedReturnLobby');
     this.netSend({ t: 'return_lobby', reason });
     this.exit('lobby', reason);
     return true;

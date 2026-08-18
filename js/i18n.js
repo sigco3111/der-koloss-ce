@@ -379,6 +379,71 @@ const EN = {
   wpnGalil: 'Galil',
   wpnCommando: 'Commando',
   wpnPapM1911: 'C-3000 b1at-ch35',
+
+  // ----- Runtime strings added in the second i18n pass -----
+  // Host button "loading" state (js/main.js)
+  hostCreating: 'CREATING…',
+
+  // Cheats panel — "all codes on" warning (js/main.js)
+  cheatsAllArmedGhostTown: 'Every code armed — including GHOST TOWN, so no zombies will spawn. Untick it for a normal run.',
+
+  // In-world interaction prompts (js/game.js)
+  promptDoorSealed: 'This door is sealed by a strange mechanism…',
+  promptQrDepleted: 'Quick Revive is depleted',
+  promptTelepadDormant: 'The machine is dormant…',
+  promptPapTakeUpgraded: 'Press <b>F</b> — take upgraded weapon',
+  promptPapUpgrading: 'Upgrading…',
+  promptPowerTurnOn: 'Hold <b>F</b> — turn on the power',
+  promptTelepadNoPower: 'The teleporter has no power',
+  promptTelepadCharging: 'Teleporter charging… stand on the pad',
+  promptNoPower: 'No power',
+  promptTrapActive: 'Trap active!',
+  promptStopRecord: 'Press <b>F</b> — stop the record',
+  promptPlayRecord: 'Press <b>F</b> — play the record',
+  promptPlayOldRadio: 'Press <b>F</b> — play the old radio',
+  promptHoldStill: 'HOLD STILL',
+
+  // HUD banner / notice additions (js/game.js)
+  hudBannerLeftGame: '{name} LEFT THE GAME',
+  hudBannerLeftGameSub: 'Their soldier was removed',
+  hudBannerYouDown: 'YOU ARE DOWN',
+
+  // Pack-a-Punch ready toast (js/game.js)
+  toastPapReady: 'Your weapon is ready',
+
+  // Multiplayer host-ended messages (js/game.js)
+  netHostEndedMatch: 'The host ended the match.',
+  netHostEndedReturnLobby: 'The host ended the match — everyone returned to the lobby.',
+
+  // Site chrome (js/site-chrome.js)
+  siteAriaMenuOpen: 'Open navigation menu',
+  siteAriaMenuClose: 'Close navigation menu',
+
+  // Assets page (js/assets-page.js)
+  assetsNoUpgradeRecord: 'No upgrade record',
+  assetsWeaponHelp: 'Press to fire one shot. Reload manually or when the magazine is empty.',
+  assetsRecordings: 'RECORDINGS',
+  assetsWeaponClassLmg: 'Light Machine Guns',
+  assetsWeaponClassSniper: 'Sniper Rifles',
+  assetsWeaponClassLauncher: 'Launchers',
+  assetsWeaponClassWonder: 'Wonder Weapons',
+  assetsClassAll: 'All',
+  assetsPapTag: 'Pack-a-Punch',
+  assetsStandardTag: 'Standard issue',
+  assetsWeaponNoRecord: 'No record',
+  assetsOriginalDesignation: 'Original designation',
+  assetsUpgradeLabel: 'Upgrade',
+  assetsWeaponHelpAuto: 'Press and hold to fire at {rpm} RPM. The weapon reloads automatically when empty.',
+  assetsLiveFire: 'Live fire',
+  assetsFiringAuto: 'FIRING // HOLD TO CONTINUE',
+  assetsFiringSingle: 'FIRING // SINGLE SHOT',
+
+  // Map / world decoration (kept EN in KO on purpose — they're diegetic signage)
+  mapSignFactory: 'WAFFENFABRIK  DER  KOLOSS',
+  mapSignVesper: 'CREATED BY VESPER.INC',
+  mapAreaChemtesting: 'Chemical Testing',
+  mapAreaAnimallab: 'Animal Testing Lab',
+  mapAreaAutogarage: 'Automobile Garage',
 };
 
 const KO = {
@@ -745,6 +810,72 @@ const KO = {
   wpnGalil: '갈릴',
   wpnCommando: '코만도',
   wpnPapM1911: 'C-3000 b1at-ch35',
+
+  // ----- Runtime strings added in the second i18n pass -----
+  // Host button "loading" state (js/main.js)
+  hostCreating: '생성 중…',
+
+  // Cheats panel — "all codes on" warning (js/main.js)
+  cheatsAllArmedGhostTown: '전체 코드가 활성화됨 — GHOST TOWN이 포함되어 있어 좀비가 스폰되지 않습니다. 일반 진행을 원하면 해제하세요.',
+
+  // In-world interaction prompts (js/game.js)
+  promptDoorSealed: '이 문은 정체불명의 장치로 봉인되어 있습니다…',
+  promptQrDepleted: '퀵 리바이브가 모두 소진되었습니다',
+  promptTelepadDormant: '기계가 비활성 상태입니다…',
+  promptPapTakeUpgraded: '<b>F</b> 누르기 — 강화된 무기 회수',
+  promptPapUpgrading: '강화 중…',
+  promptPowerTurnOn: '<b>F</b> 누르고 있기 — 전원 켜기',
+  promptTelepadNoPower: '순간이동 장치에 전원이 없습니다',
+  promptTelepadCharging: '순간이동 장치 충전 중… 패드 위에 서 계세요',
+  promptNoPower: '전원 없음',
+  promptTrapActive: '함정 작동 중!',
+  promptStopRecord: '<b>F</b> 누르기 — 레코드 정지',
+  promptPlayRecord: '<b>F</b> 누르기 — 레코드 재생',
+  promptPlayOldRadio: '<b>F</b> 누르기 — 옛 라디오 재생',
+  promptHoldStill: '가만히 있어',
+
+  // HUD banner / notice additions (js/game.js)
+  hudBannerLeftGame: '{name} 게임 퇴장',
+  hudBannerLeftGameSub: '해당 군인이 제거되었습니다',
+  hudBannerYouDown: '쓰러졌습니다',
+
+  // Pack-a-Punch ready toast (js/game.js)
+  toastPapReady: '무기 준비 완료',
+
+  // Multiplayer host-ended messages (js/game.js)
+  netHostEndedMatch: '호스트가 경기를 종료했습니다.',
+  netHostEndedReturnLobby: '호스트가 경기를 종료했습니다 — 모두 로비로 돌아갑니다.',
+
+  // Site chrome (js/site-chrome.js)
+  siteAriaMenuOpen: '내비게이션 메뉴 열기',
+  siteAriaMenuClose: '내비게이션 메뉴 닫기',
+
+  // Assets page (js/assets-page.js)
+  assetsNoUpgradeRecord: '강화 기록 없음',
+  assetsWeaponHelp: '한 발씩 발사합니다. 재장전은 수동으로, 혹은 탄창이 비면 자동으로.',
+  assetsRecordings: '녹음 파일',
+  assetsWeaponClassLmg: '경기관총',
+  assetsWeaponClassSniper: '저격총',
+  assetsWeaponClassLauncher: '발사기',
+  assetsWeaponClassWonder: '원더 무기',
+  assetsClassAll: '전체',
+  assetsPapTag: '팩어펀치',
+  assetsStandardTag: '기본 지급',
+  assetsWeaponNoRecord: '기록 없음',
+  assetsOriginalDesignation: '원래 명칭',
+  assetsUpgradeLabel: '강화',
+  assetsWeaponHelpAuto: '{rpm} RPM으로 누르고 있으면 연속 발사. 탄창이 비면 자동으로 재장전됩니다.',
+  assetsLiveFire: '실사 발사',
+  assetsFiringAuto: '발사 중 // 누르고 있으면 계속',
+  assetsFiringSingle: '발사 중 // 단발',
+
+  // Map / world decoration — diegetic signage stays in German / English
+  // for immersion; the localized fork keeps the original.
+  mapSignFactory: 'WAFFENFABRIK  DER  KOLOSS',
+  mapSignVesper: 'CREATED BY VESPER.INC',
+  mapAreaChemtesting: 'Chemical Testing',
+  mapAreaAnimallab: 'Animal Testing Lab',
+  mapAreaAutogarage: 'Automobile Garage',
 };
 
 // ----- Runtime state -----
