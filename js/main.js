@@ -8,9 +8,14 @@ import { Net } from './net.js';
 import { Game } from './game.js';
 import { assets } from './assets.js';
 import { PERSONAS, drawPortrait } from './personas.js';
-import { WEAPONS } from './weapons.js';
+import { WEAPONS, displayName as weaponDisplayName } from './weapons.js';
 import { getMenuMusicOffset, keepMenuMusicClock } from './site-audio.js?v=6';
 import { shouldRefreshLobbyUi, shouldShowGameplayCanvas } from './multiplayer-contracts.js';
+import { t, setLanguage as setI18nLang } from './i18n.js';
+
+// Default to Korean for the localized fork. Players can flip back to EN by
+// setting language in the URL (?lang=en) or by editing localStorage.
+setI18nLang('ko');
 
 const $ = (id) => document.getElementById(id);
 const DEBUG = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
@@ -100,7 +105,8 @@ function getPersona() {
 function setPersona(id) {
   localStorage.setItem(PERSONA_KEY, id);
   app.net?.setPersona(id);
-  $('lobby-char-name').textContent = PERSONAS.find((p) => p.id === id)?.label || '';
+  const labelKey = `persona${id[0].toUpperCase()}${id.slice(1)}`;
+  $('lobby-char-name').textContent = t(labelKey);
 }
 let charReturnTo = 'menu';
 function openCharSelect(from) {
@@ -129,9 +135,9 @@ function buildCharCards() {
     cv.width = cv.height = 32;
     drawPortrait(cv, p.id);
     const nm = document.createElement('div');
-    nm.className = 'cc-name'; nm.textContent = p.label;
+    nm.className = 'cc-name'; nm.textContent = t(`persona${p.id[0].toUpperCase()}${p.id.slice(1)}`);
     const rl = document.createElement('div');
-    rl.className = 'cc-role'; rl.textContent = isTaken ? 'TAKEN' : p.role;
+    rl.className = 'cc-role'; rl.textContent = isTaken ? t('charTaken') : t(`persona${p.id[0].toUpperCase()}${p.id.slice(1)}Role`);
     card.append(cv, nm, rl);
     if (!isTaken) card.addEventListener('click', () => { audio.play('ui'); openCharPage(p.id); });
     wrap.appendChild(card);
@@ -142,10 +148,14 @@ function openCharPage(id) {
   charPageId = id;
   const p = PERSONAS.find((x) => x.id === id);
   if (!p) return;
-  $('char-name').textContent = p.label;
-  $('char-role').textContent = p.role;
-  $('char-bio').textContent = p.bio;
-  $('char-traits').innerHTML = p.traits.map((x) => `<li>${x}</li>`).join('');
+  const cap = (s) => s[0].toUpperCase() + s.slice(1);
+  const labelKey = `persona${cap(id)}`;
+  const roleKey = `${labelKey}Role`;
+  const bioKey = `${labelKey}Bio`;
+  $('char-name').textContent = t(labelKey);
+  $('char-role').textContent = t(roleKey);
+  $('char-bio').textContent = t(bioKey);
+  $('char-traits').innerHTML = [1,2,3].map((i) => `<li>${t(`${labelKey}T${i}`)}</li>`).join('');
   $('char-quotes').innerHTML = p.quotes.map((q) => `<div>“${q}”</div>`).join('');
   const cv = $('char-portrait');
   cv.width = 96; cv.height = 96;
@@ -153,16 +163,16 @@ function openCharPage(id) {
   // SELECT blocked if someone in the lobby already claimed this marine
   const taken = takenPersonas();
   const pickBtn = $('btn-char-pick');
-  if (taken.has(id)) { pickBtn.disabled = true; pickBtn.textContent = 'TAKEN'; }
-  else { pickBtn.disabled = false; pickBtn.textContent = 'SELECT'; }
+  if (taken.has(id)) { pickBtn.disabled = true; pickBtn.textContent = t('charTaken'); }
+  else { pickBtn.disabled = false; pickBtn.textContent = t('charSelect'); }
   // voice line preview buttons (a few signature lines per character)
   const vwrap = $('char-voice-lines');
   vwrap.innerHTML = '';
-  const previews = [['start1', 'Battle cry'], ['round1', 'New wave'], ['kill1', 'Kill'], ['power1', 'Power on']];
-  for (const [ev, lbl] of previews) {
+  const previews = [['start1', 'charVoiceStart'], ['round1', 'charVoiceRound'], ['kill1', 'charVoiceKill'], ['power1', 'charVoicePower']];
+  for (const [ev, key] of previews) {
     const b = document.createElement('button');
     b.className = 'vline-btn';
-    b.textContent = '▸ ' + lbl;
+    b.textContent = '▸ ' + t(key);
     b.addEventListener('click', async () => {
       b.disabled = true;
       try {
@@ -171,7 +181,7 @@ function openCharPage(id) {
         if (!assets.audioReady) await assets.loadAudio(audio.ctx);
         const buf = assets.sound(`vox_${id}_${ev}`);
         if (buf) audio.playBuffer(buf, 'vox', { bus: 'sfx', vol: 1.8 });
-        else toast('Voice line not found.');
+        else toast(t('toastVoiceLineMissing'));
       } finally { b.disabled = false; }
     });
     vwrap.appendChild(b);
@@ -192,11 +202,11 @@ const WPN_ERA = {
   ptrs41: 0, mosin: 0, springfield: 0, panzerschreck: 0, stg44: 0, raygun: 0, dg2: 0,
   ump45: 1, acr: 1, famas: 1, ak74u: 1, galil: 1, commando: 1,
 };
-const ERA_LBL = ['WORLD AT WAR', 'BLACK OPS ERA'];
+const ERA_LBL = ['eraWaw', 'eraBo'];
 const CLS_ORDER = ['pistol', 'smg', 'shotgun', 'rifle', 'sniper', 'lmg', 'launcher', 'wonder'];
-const CLS_LBL = { pistol: 'PISTOLS', smg: 'SMGs', shotgun: 'SHOTGUNS', rifle: 'RIFLES', sniper: 'SNIPERS', lmg: 'LMGs', launcher: 'LAUNCHERS', wonder: 'WONDER WEAPONS' };
+const CLS_LBL = { pistol: 'clsPistol', smg: 'clsSmg', shotgun: 'clsShotgun', rifle: 'clsRifle', sniper: 'clsSniper', lmg: 'clsLmg', launcher: 'clsLauncher', wonder: 'clsWonder' };
 const LOADOUT_GUNS = Object.keys(WPN_ERA)
-  .map((id) => ({ id, name: WEAPONS[id]?.name || id, cls: WEAPONS[id]?.cls || 'rifle', era: WPN_ERA[id] }))
+  .map((id) => ({ id, name: weaponDisplayName(id), cls: WEAPONS[id]?.cls || 'rifle', era: WPN_ERA[id] }))
   .filter((w) => CLS_ORDER.includes(w.cls))
   .sort((a, b) => a.era - b.era || CLS_ORDER.indexOf(a.cls) - CLS_ORDER.indexOf(b.cls) || a.name.localeCompare(b.name));
 function buildWeaponPickers() {
@@ -209,7 +219,7 @@ function buildWeaponPickers() {
       let lastGroup = null;
       for (const w of LOADOUT_GUNS) {
         if (filter && !w.name.toLowerCase().includes(filter)) continue;
-        const group = `${ERA_LBL[w.era]} · ${CLS_LBL[w.cls]}`;
+        const group = `${t(ERA_LBL[w.era])} · ${t(CLS_LBL[w.cls])}`;
         if (group !== lastGroup) {
           lastGroup = group;
           const gh = document.createElement('div');
@@ -234,7 +244,7 @@ function buildWeaponPickers() {
         });
         list.appendChild(b);
       }
-      if (!list.children.length) list.innerHTML = '<div class="wpn-group">no guns match</div>';
+      if (!list.children.length) list.innerHTML = `<div class="wpn-group">${t('cheatNoMatch')}</div>`;
     };
     search.addEventListener('input', () => render(search.value.trim().toLowerCase()));
     wrap._render = render;
@@ -261,9 +271,7 @@ function syncCheatsUI() {
   $('cheats-panel').classList.toggle('read-only', guest);
   for (const wrap of document.querySelectorAll('.wpn-pick')) wrap._render?.(wrap.querySelector('.wpn-search').value.trim().toLowerCase());
   // Guests see the host's current snapshot, but cannot mutate any setting.
-  $('cheats-note').textContent = guest
-    ? 'VIEW ONLY — only the host can change cheats. The settings shown here are the host’s and apply to everyone.'
-    : 'Solo & hosted lobbies — in co-op your codes apply to everyone.';
+  $('cheats-note').textContent = guest ? t('cheatViewOnly') : t('cheatNote');
   $('btn-cheats-all').style.display = guest ? 'none' : '';
   $('btn-cheats-none').style.display = guest ? 'none' : '';
   $('btn-titan').style.display = guest ? 'none' : '';
@@ -297,7 +305,7 @@ function bindCheatsUI() {
     });
     saveCheats(); syncCheatsUI();
     audio.play('count_go');
-    toast('TITAN MODE armed — God + Wunderwaffen + perks + 50k + power on + doors open + teleporters linked (no gold, no ghost town)');
+    toast(t('toastTitan'));
   });
   const setAll = (v) => {
     if (cheatsReadOnly()) return;
@@ -397,7 +405,7 @@ function bindOptionsUI() {
   bind('opt-sens', 'sensitivity', (v) => v.toFixed(2));
   bind('opt-fov', 'fov', (v) => Math.round(v));
   bind('opt-brightness', 'brightness', (v) => Math.round(v * 100) + '%');
-  bind('opt-motionblur', 'motionBlur', (v) => (v <= 0.001 ? 'Off' : Math.round(v * 100) + '%'));
+  bind('opt-motionblur', 'motionBlur', (v) => (v <= 0.001 ? t('optMotionBlurOff') : Math.round(v * 100) + '%'));
   bind('opt-master', 'master', (v) => Math.round(v * 100) + '%');
   bind('opt-sfx', 'sfx', (v) => Math.round(v * 100) + '%');
   bind('opt-music', 'music', (v) => Math.round(v * 100) + '%');
@@ -458,18 +466,22 @@ function updateLobbyVoiceUI() {
   const btn = $('btn-lobby-mic');
   const note = $('lobby-voice-note');
   if (!btn) return;
-  if (!net) { btn.textContent = 'MIC: —'; if (note) note.textContent = ''; return; }
+  if (!net) { btn.textContent = t('lobbyMicDash'); if (note) note.textContent = ''; return; }
   btn.disabled = !net.isHost && !net.lobbyVoiceEnabled;
   if (!net.lobbyVoiceEnabled) {
-    btn.textContent = 'VOICE: OFF';
-    if (note) note.textContent = net.isHost ? 'host setting — guests will not be asked for microphone access' : 'disabled by host — no microphone permission needed';
+    btn.textContent = t('lobbyVoiceOff');
+    if (note) note.textContent = net.isHost ? t('lobbyVoiceHostSetting') : t('lobbyVoiceHostDisabled');
     return;
   }
-  if (net.voiceFailed && !net.myStream) { btn.textContent = 'MIC: BLOCKED'; if (note) note.textContent = 'click to retry (check browser permission)'; return; }
-  btn.textContent = net.isHost ? 'VOICE: ON' : (net.micMuted ? 'MIC: MUTED' : 'MIC: ON');
+  if (net.voiceFailed && !net.myStream) {
+    btn.textContent = t('lobbyMicBlocked');
+    if (note) note.textContent = t('lobbyMicRetry');
+    return;
+  }
+  btn.textContent = net.isHost ? t('lobbyVoiceOn') : (net.micMuted ? t('lobbyMicMuted') : t('lobbyMicOn'));
   if (note) note.textContent = net.isHost
-    ? 'host setting — guests are prompted only while voice is ON'
-    : (net.myStream ? 'controlled by host · click to mute yourself' : 'requesting microphone…');
+    ? t('lobbyVoiceHostPolicy')
+    : (net.myStream ? t('lobbyMicControlled') : t('lobbyMicRequesting'));
 }
 function startLobbyVoiceLoop() {
   stopLobbyVoiceLoop();
@@ -520,7 +532,7 @@ function syncLobbyCountdown() {
       }
       audio.play('count_tick');
       const hint = $('lobby-hint');
-      if (hint) hint.textContent = `Starting in ${countdownLeft}s — unready to cancel.`;
+      if (hint) hint.textContent = t('lobbyStartingIn').replaceAll('{n}', countdownLeft);
     }, 1000);
   } else if (!majority && countdownT) {
     stopLobbyCountdown();
@@ -541,9 +553,12 @@ function refreshLobbyUI() {
       const mine = me.persona || getPersona();
       const earlierClaim = players.findIndex((p) => p.persona === mine) !== players.findIndex((p) => p.id === net.myId);
       if (earlierClaim) {
+        const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : '';
         const free = (PERSONAS.find((c) => !taken.has(c.id)) || PERSONAS[0]).id;
         setPersona(free);
-        toast(`${PERSONAS.find((c) => c.id === mine)?.label} is taken — you're ${PERSONAS.find((c) => c.id === free)?.label} now`);
+        toast(t('toastPersonaTaken')
+          .replaceAll('{name}', t(`persona${cap(mine)}`))
+          .replaceAll('{new}', t(`persona${cap(free)}`)));
       }
     }
   }
@@ -552,28 +567,33 @@ function refreshLobbyUI() {
   const rows = players.map((p) => {
     const col = CFG.COLORS[(p.color ?? 0) % 4];
     const self = p.id === net.myId;
+    const labelKey = `persona${(p.persona || '')[0]?.toUpperCase() || ''}${(p.persona || '').slice(1)}`;
+    const personaLbl = p.persona ? (t(labelKey) || '') : '';
     return `<div class="lobby-row">
-      <span class="lobby-spk" data-pid="${escapeHtml(p.id)}" title="voice">●</span>
-      <span class="lobby-name" style="color:${col}">${p.host ? '👑 ' : ''}${escapeHtml(p.name)}${self ? ' (you)' : ''}${p.persona ? ` · ${escapeHtml(PERSONAS.find((c) => c.id === p.persona)?.label || '')}` : ''}</span>
-      ${self ? '' : `<button class="lobby-mute${net.mutedPeers.has(p.id) ? ' muted' : ''}" data-pid="${escapeHtml(p.id)}" title="Mute/unmute this player">${net.mutedPeers.has(p.id) ? '🔇' : '🔊'}</button>`}
-      <span class="lobby-ready ${p.ready ? 'yes' : ''}">${p.ready ? 'READY' : 'NOT READY'}</span>
+      <span class="lobby-spk" data-pid="${escapeHtml(p.id)}" title="${t('lobbyMuteBtn')}">●</span>
+      <span class="lobby-name" style="color:${col}">${p.host ? t('lobbyHostPrefix') : ''}${escapeHtml(p.name)}${self ? t('lobbyYouSuffix') : ''}${personaLbl ? `${t('lobbyPersonaSep')}${escapeHtml(personaLbl)}` : ''}</span>
+      ${self ? '' : `<button class="lobby-mute${net.mutedPeers.has(p.id) ? ' muted' : ''}" data-pid="${escapeHtml(p.id)}" title="${t('lobbyMuteBtn')}">${net.mutedPeers.has(p.id) ? '�' : '🔊'}</button>`}
+      <span class="lobby-ready ${p.ready ? 'yes' : ''}">${p.ready ? t('lobbyReadyState') : t('lobbyNotReady')}</span>
     </div>`;
   }).join('');
   $('lobby-players').innerHTML = rows;
   const isHost = net?.isHost;
   $('btn-start-game').classList.toggle('hidden', !isHost);
   $('btn-lobby-cheats').classList.remove('hidden');
-  $('btn-lobby-cheats').textContent = isHost ? 'CHEAT CODES' : 'VIEW CHEAT CODES';
+  $('btn-lobby-cheats').textContent = isHost ? t('lobbyCheatCodes') : t('lobbyViewCheatCodes');
   if (isHost) {
     const can = net.majorityReady();
     $('btn-start-game').disabled = !can;
     $('lobby-hint').textContent = can
-      ? 'Majority ready — starting soon (or start now).'
-      : `Waiting for majority to ready up (${players.filter((p) => p.ready).length}/${players.length}, need ${Math.floor(players.length / 2) + 1})…`;
+      ? t('lobbyMajorityReady')
+      : t('lobbyWaitingMajority')
+          .replaceAll('{ready}', players.filter((p) => p.ready).length)
+          .replaceAll('{total}', players.length)
+          .replaceAll('{need}', Math.floor(players.length / 2) + 1);
   } else {
-    $('lobby-hint').textContent = countdownT ? $('lobby-hint').textContent : 'Waiting for the host to start…';
+    $('lobby-hint').textContent = countdownT ? $('lobby-hint').textContent : t('lobbyWaitingHost');
   }
-  $('btn-ready').textContent = app.ready ? 'UNREADY' : 'READY UP';
+  $('btn-ready').textContent = app.ready ? t('lobbyUnready') : t('lobbyReady');
   $('btn-ready').classList.toggle('ready', app.ready);
   updateLobbyVoiceUI();
   syncLobbyCountdown();
@@ -598,7 +618,7 @@ function wireNetLobby() {
   };
   net.onClosed = (reason) => {
     exitToMenu();
-    toast(reason || 'Connection lost.');
+    toast(reason || t('toastConnectionLost'));
   };
 }
 
@@ -674,9 +694,9 @@ function startGame(mode, net, lobbyPlayers, netCheats = null) {
     bootlog.push('init-done');
     applyOptions();
     lockPointer(canvas);
-    toast(mode === 'solo' ? 'Survive. Good luck.'
-      : mpMasterOverride != null ? 'Game started — master volume lowered to 15% so you can hear your team (change it in Options).'
-      : 'Game started — good luck!');
+    toast(mode === 'solo' ? t('toastSurvive')
+      : mpMasterOverride != null ? t('toastGameStartedCoop')
+      : t('toastGameStarted'));
   }).catch((e) => {
     if (DEBUG) bootlog.push('ERROR: ' + (e.stack || e.message));
     console.error('startGame failed', e);
@@ -688,7 +708,7 @@ function startGame(mode, net, lobbyPlayers, netCheats = null) {
     unlockPointer();
     showScreen(mode === 'solo' ? 'menu' : 'lobby');
     if (mode === 'solo') startMenuMusic();
-    toast('Failed to start: ' + e.message);
+    toast(t('toastFailedToStart').replaceAll('{err}', e.message));
     $('loading').classList.add('hidden');
   });
 }
@@ -732,8 +752,8 @@ function pauseGame() {
   pauseMic.classList.toggle('hidden', app.game.mode === 'solo');
   const voiceDisabled = !!app.net && !app.net.lobbyVoiceEnabled;
   pauseMic.disabled = voiceDisabled;
-  pauseMic.textContent = voiceDisabled ? 'VOICE: DISABLED' : `MIC: ${app.net?.micMuted ? 'OFF' : 'ON'}`;
-  $('btn-quit').textContent = app.game.mode === 'host' ? 'END GAME TO LOBBY' : app.game.mode === 'client' ? 'LEAVE GAME' : 'QUIT TO MENU';
+  pauseMic.textContent = voiceDisabled ? t('pauseMicDisabled') : `MIC: ${app.net?.micMuted ? t('hudOff') : t('hudSquadMicOn')}`;
+  $('btn-quit').textContent = app.game.mode === 'host' ? t('pauseEndGame') : app.game.mode === 'client' ? t('pauseLeaveGame') : t('pauseQuit');
   showScreen('pause');
   $('hud').classList.remove('hidden');
 }
@@ -820,7 +840,7 @@ function boot() {
       toast(e.message);
       app.net = null;
     }
-    btn.disabled = false; btn.textContent = 'HOST LOBBY';
+    btn.disabled = false; btn.textContent = t('menuBtnHost');
   });
   $('btn-join').addEventListener('click', () => {
     audio.play('ui');
@@ -839,8 +859,8 @@ function boot() {
     setPersona(charPageId);
     showScreen(charReturnTo);
     if (charReturnTo === 'lobby') refreshLobbyUI();
-    const picked = PERSONAS.find((p) => p.id === charPageId);
-    toast(`${picked?.label} selected`);
+    const cap = (s) => s[0].toUpperCase() + s.slice(1);
+    toast(t('toastPersonaPicked').replaceAll('{name}', t(`persona${cap(charPageId)}`)));
   });
   $('btn-lobby-char').addEventListener('click', () => { audio.play('ui'); openCharSelect('lobby'); });
   // easy in-lobby rename (persisted + broadcast to everyone)
@@ -861,9 +881,9 @@ function boot() {
   $('btn-join-cancel').addEventListener('click', () => { audio.play('ui'); showScreen('menu'); });
   const doJoin = async () => {
     const code = $('join-code').value.trim().toUpperCase();
-    if (code.length < 4) { toast('Enter the lobby code.'); return; }
+    if (code.length < 4) { toast(t('toastEnterCode')); return; }
     const btn = $('btn-join-go');
-    btn.disabled = true; btn.textContent = 'JOINING…';
+    btn.disabled = true; btn.textContent = t('joinGoBusy');
     try {
       app.net = new Net();
       wireNetLobby();
@@ -881,7 +901,7 @@ function boot() {
       if (app.net) { app.net.leave(); app.net = null; }
       showScreen('menu');
     }
-    btn.disabled = false; btn.textContent = 'JOIN';
+    btn.disabled = false; btn.textContent = t('joinGo');
   };
   $('btn-join-go').addEventListener('click', doJoin);
   $('join-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') doJoin(); });
@@ -935,13 +955,13 @@ function boot() {
     app.net.mutePeer(id, m);
     b.textContent = m ? '🔇' : '🔊';
     b.classList.toggle('muted', m);
-    toast(m ? 'Player muted (this session)' : 'Player unmuted');
+    toast(m ? t('toastPlayerMuted') : t('toastPlayerUnmuted'));
   });
   $('btn-copy-link').addEventListener('click', async () => {
     audio.play('ui');
     const link = $('lobby-link').value;
-    try { await navigator.clipboard.writeText(link); toast('Invite link copied — send it to your friend!'); }
-    catch (e) { $('lobby-link').select(); toast('Select and copy the link manually.'); }
+    try { await navigator.clipboard.writeText(link); toast(t('toastInviteCopied')); }
+    catch (e) { $('lobby-link').select(); toast(t('toastCopyManually')); }
   });
 
   // pause
@@ -957,9 +977,9 @@ function boot() {
   const isFs = () => !!document.fullscreenElement;
   function syncFsUI() {
     const on = isFs();
-    $('btn-pause-fs').textContent = `FULLSCREEN: ${on ? 'ON' : 'OFF'}`;
+    $('btn-pause-fs').textContent = on ? t('pauseFsOn') : t('pauseFs');
     const lobbyFs = $('btn-lobby-fs');
-    lobbyFs.textContent = on ? 'EXIT FULL SCREEN' : 'FULL SCREEN';
+    lobbyFs.textContent = on ? t('lobbyFsExit') : t('lobbyFsBtn');
     lobbyFs.classList.toggle('fullscreen-callout', !on);
     lobbyFs.setAttribute('aria-pressed', String(on));
     syncSoloFsUI();
@@ -969,10 +989,10 @@ function boot() {
     const start = $('btn-solo-fs-start');
     if (!button || !start) return;
     const on = isFs();
-    button.textContent = on ? 'EXIT FULL SCREEN' : 'ENTER FULL SCREEN';
+    button.textContent = on ? t('soloFsExit') : t('soloFsEnter');
     button.classList.toggle('fullscreen-callout', !on);
     button.setAttribute('aria-pressed', String(on));
-    start.textContent = on ? 'START GAME' : 'START WITHOUT FULL SCREEN';
+    start.textContent = on ? t('soloFsStartFs') : t('soloFsStart');
   }
   async function toggleFullscreen() {
     try {
@@ -990,7 +1010,7 @@ function boot() {
     if (!app.game || !app.net?.lobbyVoiceEnabled) return;
     const m = !app.game.micMuted;
     app.game.setMicMuted(m);
-    $('btn-pause-mic').textContent = `MIC: ${m ? 'OFF' : 'ON'}`;
+    $('btn-pause-mic').textContent = `MIC: ${m ? t('hudOff') : t('hudSquadMicOn')}`;
   });
 
   // pointer lock loss => pause — EXCEPT when Tab (scoreboard) caused it: relock instantly
@@ -1050,7 +1070,7 @@ function boot() {
     showScreen('join-modal');
     $('join-code').value = joinCode.toUpperCase();
     $('btn-join-go').focus();
-    toast(inviter ? `${inviter} invited you — press JOIN to drop in!` : 'Lobby invite detected — press JOIN to drop in!');
+    toast(inviter ? t('toastInvitedBy').replaceAll('{name}', inviter) : t('toastInviteDetected'));
   } else {
     showScreen('menu');
   }

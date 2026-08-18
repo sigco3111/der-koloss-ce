@@ -16,6 +16,17 @@ import {
   buildHand, triggerHand, supportHand, foreGripHand, fistHand,
   crackFist, knifeHand, setHandPose, resetHandPose,
 } from './render/WeaponHands.js';
+import { t } from './i18n.js';
+
+// Localized weapon display name lookup. The keys in WEAPONS below stay EN
+// (they're identifiers fed to logic), so callers wrap with displayName(id)
+// instead of reading .name directly. Pack-a-Punch variants stay EN on
+// purpose — they're in-world fictional gun names, not user-facing menu items.
+export function displayName(id) {
+  if (!id) return '';
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  return t(`wpn${cap(id)}`);
+}
 
 // fire: 'hitscan' | 'projectile' | 'arc'
 // cls: pistol|smg|rifle|shotgun|lmg|sniper|wonder|launcher

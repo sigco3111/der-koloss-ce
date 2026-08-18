@@ -10,6 +10,8 @@ import { audio } from './audio.js';
 import { assets } from './assets.js';
 import { PERSONAS, lineFor, variantCount } from './personas.js';
 import { buildMap } from './map.js';
+import { t } from './i18n.js';
+import { displayName as weaponDisplayName } from './weapons.js';
 import {
   getStats, WEAPONS, BOX_POOL, buildViewmodel, buildMonkey,
   buildPapDisplayWeapon, updatePapDisplayWeapon, disposePapDisplayWeapon,
@@ -492,7 +494,7 @@ export class Game {
       this.hud.setGrenades(p.grenades, p.monkeys);
       this.weaponRig.equip(p.weapon.id, p.weapon.pap);
       this.hud.setAmmo(p.weapon.mag, p.weapon.reserve, getStats(p.weapon.id, p.weapon.pap).displayName);
-      this.hud.banner('WUNDERWAFFEN', '#7ec8e3', 'Ray Gun + DG-2 · X throws Monkey Bombs');
+      this.hud.banner(t('bannerWunder'), '#7ec8e3', t('bannerWunderSub'));
     }
     // A loadout is persisted in localStorage and can also arrive from the host,
     // so it can name a weapon this build does not have. Drop unknown ids here
@@ -508,7 +510,7 @@ export class Game {
       p.cur = 0;
       this.weaponRig.equip(p.weapon.id, false);
       this.hud.setAmmo(p.weapon.mag, p.weapon.reserve, getStats(p.weapon.id, false).displayName);
-      this.hud.banner('CUSTOM LOADOUT', '#7ec8e3', p.weapons.map((w) => WEAPONS[w.id]?.name).filter(Boolean).join(' + '));
+      this.hud.banner(t('bannerCustomLoadout'), '#7ec8e3', p.weapons.map((w) => weaponDisplayName(w.id)).filter(Boolean).join(' + '));
     }
     // Only the starting M1911 needs dressing by hand — it was equipped during
     // init, before alwaysGold was raised. Every branch above re-equips, and
@@ -519,7 +521,7 @@ export class Game {
     if (c.tele) {
       for (const tp of this.map.teleporters) tp.linked = true;
       this.teleLinks = 3;
-      this.hud.banner('TELEPORTERS LINKED', '#7ec8e3');
+      this.hud.banner(t('bannerTeleLinked'), '#7ec8e3');
     }
     // spawn config: start round + area. Non-default starts are testing/explore
     // shortcuts, so open the smallest route back to Mainframe as well. Without
@@ -2340,7 +2342,7 @@ export class Game {
     if (this.cheats.zero) {
       if (!this._zeroBannered) {
         this._zeroBannered = true;
-        this.hud.banner('GHOST TOWN', '#7ec8e3', 'No zombies — explore freely');
+        this.hud.banner(t('bannerGhostTown'), '#7ec8e3', t('bannerGhostTownSub'));
       }
       // Still check for death. You can kill yourself with your own splash even
       // with nothing hunting you, and with no wave to clear there is no
@@ -2421,7 +2423,7 @@ export class Game {
     if (n === 1) setTimeout(() => { if (!this.disposed) this.bark('start', { force: true }); }, 1400);
     else this.bark('round', { chance: 0.35 });
     if (this.zombies.dogRound) {
-      this.hud.banner('HELLHOUNDS', '#ff7733', 'They come for your blood');
+      this.hud.banner(t('bannerHellhounds'), '#ff7733', t('bannerHellhoundsSub'));
       audio.play('ann_dogs');
       audio.play('dog_howl');
       this.bark('dog', { force: true });
@@ -2443,7 +2445,9 @@ export class Game {
     // the bodies instead of sprinting at a player who can no longer be reached.
     this.zombies.setDormant(true);
     audio.play('gameover');
-    this.hud.banner('GAME OVER', '#ff3333', `You survived ${this.round} round${this.round === 1 ? '' : 's'}`);
+    this.hud.banner(t('bannerGameOver'), '#ff3333', t('bannerGameOverSub')
+      .replaceAll('{n}', String(this.round))
+      .replaceAll('{s}', this.round === 1 ? '' : 's'));
     this.netSend({ t: 'gameover', round: this.round });
     const destination = multiplayerExitDestination({ mode: this.mode, gameOver: true });
     setTimeout(() => { if (!this.disposed) this.exit(destination); }, 6000);
@@ -2482,18 +2486,18 @@ export class Game {
           this.hud.setGrenades(this.player.grenades, this.player.monkeys);
         }
         audio.play('maxammo');
-        this.hud.banner('MAX AMMO', '#8dff8d');
+        this.hud.banner(t('bannerMaxAmmo'), '#8dff8d');
         break;
       }
       case 'insta':
         this.instaT = 30;
         audio.play('instakill');
-        this.hud.banner('INSTA-KILL', '#ff6a5a');
+        this.hud.banner(t('bannerInstaKill'), '#ff6a5a');
         break;
       case 'double':
         this.doubleT = 30;
         audio.play('doublepoints');
-        this.hud.banner('DOUBLE POINTS', '#ffd24a');
+        this.hud.banner(t('bannerDoublePoints'), '#ffd24a');
         break;
       case 'nuke': {
         audio.play('nuke');
@@ -2505,7 +2509,7 @@ export class Game {
         } else if (pid === this.player.id) {
           this.awardPoints(CFG.NUKE_POINTS);
         }
-        this.hud.banner('NUKE', '#c8b6ff');
+        this.hud.banner(t('bannerNuke'), '#c8b6ff');
         break;
       }
     }
@@ -2825,7 +2829,7 @@ export class Game {
         } else {
           audio.playSong(songPos);
           this.netSend({ t: this.isAuthority ? 'song' : 'song_req', on: 1 });
-          this.hud.banner('BEAUTY OF ANNIHILATION', '#c8402f', '♪');
+          this.hud.banner(t('bannerBeauty'), '#c8402f', t('bannerBeautySub'));
         }
         break;
       }
@@ -2891,17 +2895,17 @@ export class Game {
       if (wid === 'bowie') {
         p.bowie = true;
         this.weaponRig.setKnifeGold(true);
-        this.hud.banner('BOWIE KNIFE', '#ffd24a', 'One slash, one kill');
+        this.hud.banner(t('bannerBowie'), '#ffd24a', t('bannerBowieSub'));
       } else if (wid === 'monkey') {
         p.ownsMonkeys = true;
         p.monkeys = Math.min(2, p.monkeys + 2);
         this.hud.setGrenades(p.grenades, p.monkeys);
-        this.hud.banner('MONKEY BOMB', '#ffd24a', 'Press X to throw — zombies chase it, then BOOM');
+        this.hud.banner(t('bannerMonkey'), '#ffd24a', t('bannerMonkeySub'));
       } else {
         // rare golden finish straight out of the box
         const goldLucky = Math.random() < 0.08;
         p.giveWeapon(wid, false);
-        if (goldLucky && p.weapon) { p.weapon.gold = true; this.hud.banner('GOLDEN GUN', '#ffd24a', 'A rare finish! Pack-a-Punch it for DIAMOND'); }
+        if (goldLucky && p.weapon) { p.weapon.gold = true; this.hud.banner(t('bannerGolden'), '#ffd24a', t('bannerGoldenSub')); }
       }
       if (wid === 'monkey') { /* handled below via giveMonkey path */ }
       this.weaponRig.equip(p.weapon.id, p.weapon.pap);
@@ -2981,7 +2985,7 @@ export class Game {
           this.map.moveBox(idx);
           this.boxSetIdle();
           this.netSend({ t: 'box_move', idx });
-          this.hud.banner('THE BOX HAS MOVED', '#ffd24a');
+          this.hud.banner(t('bannerBoxMoved'), '#ffd24a');
         }
       }
     }
@@ -3408,7 +3412,7 @@ export class Game {
       for (const lamp of lamps) lamp.intensity = 0;
       // power-sealed doors (corridor shortcuts + balcony bridge) open automatically
       for (const d of this.map.doors) if (d.auto && !d.open) this.openDoor(d);
-      this.hud.banner('POWER ON', '#ffd24a');
+      this.hud.banner(t('bannerPowerOn'), '#ffd24a');
       this.bark('power', { force: true });
     }
   }
@@ -3456,7 +3460,7 @@ export class Game {
     tele.linked = true;
     this.teleLinks++; this.bark('tele', { chance: 0.9 });
     if (this.teleLinks >= 3) {
-      this.hud.banner('PACK-A-PUNCH AVAILABLE', '#c9a2ff', 'All three teleporters are linked');
+      this.hud.banner(t('bannerPapAvailable'), '#c9a2ff', t('bannerPapAvailableSub'));
       audio.play('pap_done');
       this.netSend({ t: 'pap_door' });
     } else {
@@ -3550,7 +3554,7 @@ export class Game {
     this.hud.downUI(false);
     this.hud.setPerks(p.perks);
     this.hud.setGrenades(p.grenades, p.monkeys);
-    this.hud.banner('BACK IN THE FIGHT', '#7ee38a', 'Make it count this time');
+    this.hud.banner(t('bannerBackInFight'), '#7ee38a', t('bannerBackInFightSub'));
     audio.play('revive');
     this.netSend({ t: 'respawn', pid: p.id });
   }
@@ -3852,8 +3856,8 @@ export class Game {
           this.hud.setGrenades(this.player.grenades, this.player.monkeys);
         }
         this.hud.setRound(msg.n, !!msg.dog);
-        if (msg.dog) { this.hud.banner('HELLHOUNDS', '#ff7733', 'They come for your blood'); audio.play('dog_howl'); }
-        else { this.hud.banner(`ROUND ${msg.n}`, msg.n >= 10 ? '#ff4444' : '#c33', ''); audio.setRound(msg.n); audio.play('round_start'); }
+        if (msg.dog) { this.hud.banner(t('bannerHellhounds'), '#ff7733', t('bannerHellhoundsSub')); audio.play('dog_howl'); }
+        else { this.hud.banner(`라운드 ${msg.n}`, msg.n >= 10 ? '#ff4444' : '#c33', ''); audio.setRound(msg.n); audio.play('round_start'); }
         break;
       }
       case 'intermission': {
@@ -4041,7 +4045,9 @@ export class Game {
           this.over = true;
           this.zombies.setDormant(true);
           audio.play('gameover');
-          this.hud.banner('GAME OVER', '#ff3333', `You survived ${msg.round} round${msg.round === 1 ? '' : 's'}`);
+          this.hud.banner(t('bannerGameOver'), '#ff3333', t('bannerGameOverSub')
+            .replaceAll('{n}', String(msg.round))
+            .replaceAll('{s}', msg.round === 1 ? '' : 's'));
           setTimeout(() => { if (!this.disposed) this.exit('lobby'); }, 6000);
         }
         break;
@@ -4075,7 +4081,7 @@ export class Game {
         const boxIdx = Number(msg.idx);
         if (!Number.isInteger(boxIdx) || boxIdx < 0 || boxIdx >= this.map.box.locations.length) break;
         this.map.moveBox(boxIdx);
-        if (!this.isAuthority) { this.boxState.state = 'idle'; this.hud.banner('THE BOX HAS MOVED', '#ffd24a'); }
+        if (!this.isAuthority) { this.boxState.state = 'idle'; this.hud.banner(t('bannerBoxMoved'), '#ffd24a'); }
         break;
       }
       case 'pap_req': {
@@ -4110,7 +4116,7 @@ export class Game {
         if (!this.isAuthority && msg.pid === p.id
             && this.papState.mine && this.papState.weapon === msg.w) {
           this._cancelLocalPapAttempt(true);
-          this.hud.banner('PACK-A-PUNCH BUSY', '#ff9944', 'Your points were refunded');
+          this.hud.banner(t('bannerPapBusy'), '#ff9944', t('bannerPapBusySub'));
         }
         break;
       }
@@ -4143,7 +4149,7 @@ export class Game {
         break;
       }
       case 'pap_door': {
-        this.hud.banner('PACK-A-PUNCH AVAILABLE', '#c9a2ff', 'All three teleporters are linked');
+        this.hud.banner(t('bannerPapAvailable'), '#c9a2ff', t('bannerPapAvailableSub'));
         audio.play('pap_done');
         this.teleLinks = 3;
         break;

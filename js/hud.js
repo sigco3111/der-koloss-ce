@@ -3,6 +3,8 @@
 import { CFG } from './config.js';
 import { multiplayerRosterPresentation } from './multiplayer-contracts.js';
 import { clamp } from './utils.js';
+import { t } from './i18n.js';
+import { displayName as weaponDisplayName } from './weapons.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -99,7 +101,7 @@ export class HUD {
     const prevSig = this._ammoSig;
     this._ammoSig = sig;
     this.el.ammo.innerHTML = `<span class="mag">${mag}</span><span class="sep">|</span><span class="reserve">${reserve}</span>`;
-    this.el.weaponName.textContent = name;
+    this.el.weaponName.textContent = weaponDisplayName(name);
 
     const declared = Number(magSize) > 0 ? Math.trunc(Number(magSize)) : 0;
     const cap = declared || Math.max(this._magMax.get(name) || 0, mag, 1);
@@ -186,7 +188,7 @@ export class HUD {
   setPerks(perkSet, allPerks) {
     const art = { jug: 'juggernog', speed: 'speed-cola', dtap: 'double-tap', qr: 'quick-revive' };
     const colors = { jug: '#e0453a', speed: '#5fd08a', dtap: '#ffb454', qr: '#8fd4ea' };
-    const names = { jug: 'Juggernog', speed: 'Speed Cola', dtap: 'Double Tap', qr: 'Quick Revive' };
+    const names = { jug: t('hudPerkJug'), speed: t('hudPerkSpeed'), dtap: t('hudPerkDtap'), qr: t('hudPerkQr') };
     const sig = [...perkSet].join(',');
     if (sig === this._perkSig) return;
     this._perkSig = sig;
@@ -224,8 +226,8 @@ export class HUD {
     if (sig === this._dropTimerSig) return;
     this._dropTimerSig = sig;
     let html = '';
-    if (insta) html += `<div class="drop-timer" style="color:#ff6a5a">INSTA-KILL ${insta}</div>`;
-    if (double) html += `<div class="drop-timer" style="color:#ffd24a">DOUBLE POINTS ${double}</div>`;
+    if (insta) html += `<div class="drop-timer" style="color:#ff6a5a">${t('hudInstaKill').replaceAll('{secs}', insta)}</div>`;
+    if (double) html += `<div class="drop-timer" style="color:#ffd24a">${t('hudDoublePoints').replaceAll('{secs}', double)}</div>`;
     this.el.dropTimers.innerHTML = html;
   }
 
@@ -244,8 +246,8 @@ export class HUD {
       // on the floor knows who is actually coming for them, not just that
       // someone is. Plain true keeps the generic wording.
       this.el.downText.textContent = beingRevived
-        ? (typeof beingRevived === 'string' ? beingRevived : 'BEING REVIVED…')
-        : selfRevive ? 'REVIVING YOURSELF…' : 'YOU ARE DOWN';
+        ? (typeof beingRevived === 'string' ? beingRevived : t('hudBeingRevived'))
+        : selfRevive ? t('hudRevivingSelf') : t('hudYouAreDown');
       // "a teammate CAN revive you" is a contradiction once one actually is —
       // and a lie in solo, where going down with no self-revive is simply the end.
       if (this.el.downNote) {
@@ -268,7 +270,7 @@ export class HUD {
         this._healthState = state;
         if (this.el.healthTrack) {
           this.el.healthTrack.dataset.state = state;
-          this.el.healthTrack.setAttribute('aria-label', `Health ${Math.round(scale * 100)}%`);
+          this.el.healthTrack.setAttribute('aria-label', t('hudHealth').replaceAll('{pct}', Math.round(scale * 100)));
         }
       }
     }
@@ -293,7 +295,7 @@ export class HUD {
       if (r.dead) tr.className = 'is-dead';
       else if (r.down) tr.className = 'is-down';
       const values = [
-        `${String(r.name || 'Player').slice(0, 14)}${r.dead ? ' †' : r.down ? ' (DOWN)' : ''}`,
+        `${String(r.name || t('hudPlayer')).slice(0, 14)}${r.dead ? ' †' : r.down ? t('hudDown') : ''}`,
         r.kills, r.downs, r.revives, r.points,
       ];
       for (const value of values) {
@@ -362,8 +364,12 @@ export class HUD {
         row.querySelector('.squad-persona').textContent = player.persona;
         row.querySelector('.squad-points').textContent = player.points.toLocaleString('en-US');
         row.querySelector('.squad-voice').dataset.state = player.voice;
-        row.querySelector('.squad-voice-label').textContent = player.voice === 'muted' ? 'OFF' : 'MIC';
-        row.setAttribute('aria-label', `${player.name}, ${player.persona}, ${player.points} points, microphone ${player.voice}`);
+        row.querySelector('.squad-voice-label').textContent = player.voice === 'muted' ? t('hudSquadMicOff') : t('hudSquadMicOn');
+        row.setAttribute('aria-label', t('hudSquadAria')
+          .replaceAll('{name}', player.name)
+          .replaceAll('{persona}', player.persona)
+          .replaceAll('{pts}', player.points)
+          .replaceAll('{mic}', player.voice));
       }
       rowsEl.appendChild(row);
     }

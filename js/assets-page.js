@@ -682,10 +682,10 @@ function voiceSounds(persona) {
   return Object.entries(events).flatMap(([event, lines]) => lines.map((line, index) => ({
     id: `vox_${persona.id}_${event}${index + 1}`,
     label: `${titleCase(event)} ${index + 1} // “${line}”`,
-    kind: persona.label,
+    kind: persona.label(),
   })));
 }
-PERSONAS.forEach((persona) => renderGroup($('voice-groups'), persona.label, voiceSounds(persona)));
+PERSONAS.forEach((persona) => renderGroup($('voice-groups'), persona.label(), voiceSounds(persona)));
 
 const EFFECT_GROUPS = [
   ['Weapon Handling', [

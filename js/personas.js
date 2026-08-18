@@ -1,30 +1,39 @@
 // The four marines of the Waffenfabrik — original barks written in each
 // character's spirit (brash American, boisterous Russian, stoic Japanese,
 // manic German scientist). Voice design and performances: ElevenLabs.
+//
+// NOTE: `label` / `role` / `bio` / `traits` are display strings (translated
+// via the i18n module). `quotes` are rendered verbatim in-character — they
+// stay English on purpose so a Korean player hears the same personality as
+// the original. Voice-line LINES further down are the actual spoken audio
+// script, also untouched.
+import { t } from './i18n.js';
+
+const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : '';
 export const PERSONAS = [
   {
-    id: 'dempsey', label: 'TANK DEMPSEY', lang: 'en', role: 'U.S. MARINE RAIDER',
+    id: 'dempsey', label: () => t('personaDempsey'), lang: 'en', role: () => t('personaDempseyRole'),
     bio: 'A grizzled Marine Raider who carved his name through Peleliu and Okinawa. Loud, fearless, and allergic to retreat — the only thing he loves more than his country is watching the enemy fall apart under his trigger finger.',
     traits: ['Fearless to a fault', 'Gallows humor', 'Never leaves a man behind'],
     quotes: ['Ooh-rah!', "I'll take 'em all on myself if I have to.", 'Killin’ is my business — and business is good.'],
     portrait: { bg: '#2a2416', skin: '#c8a07a', hair: '#3a2a18', accent: '#4a5537', extra: 'jaw' },
   },
   {
-    id: 'nikolai', label: 'NIKOLAI BELINSKI', lang: 'en', role: 'RED ARMY SERGEANT',
+    id: 'nikolai', label: () => t('personaNikolai'), lang: 'en', role: () => t('personaNikolaiRole'),
     bio: 'A boisterous sergeant of the Red Army who survived the worst of the Eastern Front with a grin and a bottle. He fights like a bear, laughs like thunder, and trusts exactly two things: his comrades and his vodka.',
     traits: ['Boisterous brawler', 'Endless stamina', 'Sentimental under the muscle'],
     quotes: ['For Mother Russia!', 'I have fought bears with less fear than this.', 'Vodka first. Then war.'],
     portrait: { bg: '#241a16', skin: '#d0a884', hair: '#241812', accent: '#6b2a20', extra: 'beard' },
   },
   {
-    id: 'takeo', label: 'TAKEO MASAKI', lang: 'en', role: 'IMPERIAL ARMY CAPTAIN',
+    id: 'takeo', label: () => t('personaTakeo'), lang: 'en', role: () => t('personaTakeoRole'),
     bio: 'A disciplined captain of the Imperial Japanese Army, bound by duty and unshakable honor. He speaks little, wastes nothing, and meets death — his own or the enemy’s — with perfect composure.',
     traits: ['Unbreakable discipline', 'Precise and calm', 'Honor above life'],
     quotes: ['With honor, we fight.', 'Discipline will see us through.', 'A warrior’s duty never ends.'],
     portrait: { bg: '#161c24', skin: '#d8b890', hair: '#101010', accent: '#3a4a5a', extra: 'cap' },
   },
   {
-    id: 'richtofen', label: 'EDWARD RICHTOFEN', lang: 'en', role: 'GROUP 935 SCIENTIST',
+    id: 'richtofen', label: () => t('personaRichtofen'), lang: 'en', role: () => t('personaRichtofenRole'),
     bio: 'The brilliant, unhinged mind behind Group 935’s teleportation program. Richtofen giggles at carnage, worships his own genius, and treats the apocalypse like a field test. Something in his head ticked loose long ago — and it loves the view.',
     traits: ['Unstable genius', 'Delights in destruction', 'Knows more than he says'],
     quotes: ['The fun begins!', 'GENIUS! Wunderbar!', 'Oh, the carnage we will make!'],
