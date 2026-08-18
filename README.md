@@ -1,310 +1,221 @@
-![Der Koloss — The Colossus Awakens, by Vesper](.github/banner.webp)
+# 더 콜로스 — 한글화 포크
 
-# Der Koloss — Community Edition
+> **Der Koloss — Community Edition**의 한국어 로컬라이즈이션 포크입니다.
+> 원본은 Vesper가 만든 무료 브라우저 좀비 웨이브 서바이벌 게임으로,
+> Three.js로 작성되었고 빌드 단계가 없는 순수 ES modules + import map 프로젝트입니다.
 
-**The Colossus Awakens** — a free, browser-based round-based zombie survival game, built as a tribute to *Der Riese*.
+<div align="center">
 
-Made by [Vesper](https://vesper.inc). Play it at **[derkoloss.com](https://derkoloss.com)**.
+### 🎮 [라이브 데모 — sigco3111.github.io/der-koloss-ce](https://sigco3111.github.io/der-koloss-ce/)
 
-One factory. Four soldiers. As many rounds as you can survive.
+**원본 저장소**: [github.com/rishipr/der-koloss-ce](https://github.com/rishipr/der-koloss-ce) ·
+**이 포크**: [github.com/sigco3111/der-koloss-ce](https://github.com/sigco3111/der-koloss-ce) ·
+**라이브 URL**: [sigco3111.github.io/der-koloss-ce](https://sigco3111.github.io/der-koloss-ce/)
 
-📺 **[See it in motion](https://x.com/0xRishi/status/2081230708593590378)** — the version 2 transformation, with sound.
-
-> **Community Edition** is the open-source cut of Der Koloss: the complete game, with everything operational stripped out. No analytics, no telemetry, no feedback collector, no accounts, no keys. It makes no network calls beyond its own assets and the public PeerJS broker that introduces co-op peers. Fork it, run it, take it apart.
->
-> **Snapshot as of 26 July 2026.** This is a point-in-time cut of the production codebase and may not reflect the latest version live on [derkoloss.com](https://derkoloss.com).
+</div>
 
 ---
 
-## What it is
+## 이 포크에 대하여
 
-Der Koloss rebuilds the rhythm of classic round-based Zombies for the open web. Start with a sidearm and 500 points, repair barricades, open the factory a room at a time, buy wall weapons, spin the Mystery Box, collect perks, and turn ordinary guns into strange new machines. Every round gets faster and less forgiving.
+Der Koloss CE는 MIT 라이선스의 오픈소스 게임이지만, 원본은 영어 전용입니다.
+영어 메뉴를 읽으며 한국어 좀비 게임을 즐기는 것은 분명히 불편합니다.
+이 포크는 **사용자 인터페이스 전부를 한국어로 옮기되 게임플레이는 1:1로 보존**합니다.
 
-Power the facility. Link the teleporters. Reach the Pack-a-Punch. Then keep moving when the walls begin to close in.
+| 영역 | 변경 |
+|---|---|
+| **UI 텍스트** | 메뉴, HUD, 로비, 일시정지, 옵션, 캐릭터 선택, 치트 코드, 게임 오버 화면 모두 한글화 |
+| **메타데이터** | `<html lang="ko">`, `og:locale: ko_KR`, JSON-LD `inLanguage: ko`, canonical/sitemap/robots |
+| **정적 페이지** | about, assets, cinematic, 404 페이지의 lang/메타데이터/네비게이션 |
+| **번역 어휘** | 무기 31종, 캐릭터 4명, perk 4종, 배너 20+종, 토스트 18종, 옵션 12개 슬라이더 |
+| **게임플레이** | 변경 없음 — 무기 메카닉, 좀비 AI, 멀티플레이어 프로토콜, 렌더링 모두 원본 그대로 |
+| **LICENSE** | 원본 MIT 텍스트 그대로 보존 |
 
-It runs directly in the browser with [Three.js](https://threejs.org) — **no engine, no install, no build step.**
+## 한글화 (i18n) 상세
+
+### 아키텍처
+
+원본은 빌드 도구(vite, webpack, esbuild 등)가 전혀 없는 no-bundler 프로젝트입니다.
+`index.html`이 `<script type="importmap">`로 `three`만 모킹하고, 나머지는 전부 ES modules raw import입니다.
+따라서 localized-fork 스킬의 esbuild `t()` inline 우회 트릭이 **불필요**합니다 — 그냥 dict + `t()` 함수로 끝.
+
+```
+js/i18n.js          ← 330 키 EN↔KO 1:1 매칭 (평탄 dict)
+js/hud.js           ← import { t, weaponDisplayName } from './i18n.js';
+js/main.js          ← import { t, setLanguage as setI18nLang } from './i18n.js';
+js/game.js          ← import { t } from './i18n.js';
+js/personas.js      ← label: () => t('personaDempsey')  (함수로 래핑)
+js/weapons.js       ← export function displayName(id) { return t('wpn' + cap(id)); }
+index.html          ← 정적 KO 텍스트 (HTML은 모듈 import 시점 이전에 렌더되므로 직접 작성)
+```
+
+### 키 카테고리 (330 키)
+
+| 카테고리 | 키 수 | 예시 |
+|---|---:|---|
+| HUD | 12 | `hudBeingRevived`, `hudPerkJug`, `hudScoreKills` |
+| 배너 | 22 | `bannerGameOver`, `bannerWunder`, `bannerHellhounds` |
+| 토스트 | 18 | `toastEnterCode`, `toastPersonaTaken`, `toastTitan` |
+| 옵션 | 18 | `optSensitivity`, `optQualityLow`, `optMaster` |
+| 로비 | 26 | `lobbyReady`, `lobbyMicOn`, `lobbyWaitingMajority` |
+| 일시정지 | 14 | `pauseResume`, `pauseFsOn`, `pauseEndGame` |
+| 캐릭터 | 16 | `personaDempsey`, `personaDempseyT1`, `personaRichtofenBio` |
+| 무기 | 31 | `wpnM1911`, `wpnRaygun`, `wpnBrowning` (+ Pap M1911) |
+| 메뉴/스크린 | 50+ | `menuBtnHost`, `cheatWunderDesc`, `joinGo`, `loadHint` |
+| 영토/클래스 | 14 | `areaMainframe`, `clsPistol`, `eraWaw` |
+
+### 번역 어휘 결정 (show your work)
+
+| 원문 | 한글 | 결정 근거 |
+|---|---|---|
+| WUNDERWAFFEN | 분더바펜 | 원어 그대로 음역 — 게임 내 wonder weapons 카테고리 전체가 통용어 |
+| Pack-a-Punch | 팩어펀치 | 한국 COD/Zombies 커뮤니티 통용 음역 |
+| Ray Gun | 레이 건 | 원어 그대로 + 띄어쓰기 (무기 이름은 보존) |
+| Mystery Box | 박스 | 짧게 — `bannerBoxMoved` "박스 이동" |
+| Hellhound | 헬하운드 | 음역 + 표기 통일 |
+| Monkey Bomb | 원숭이 폭탄 | 의미 번역 |
+| Bowie Knife | 보위 나이프 | 음역 + 한 단어 |
+| Power | 전원 | 의미 |
+| Teleporter | 순간이동기 | 의미 (Tele A/B는 그대로) |
+| Pack | 팩어�치 약어 | 위와 동일 |
+| Beauty of Annihilation | 파괴의 미학 | 음역 — Treyarch 노래 제목 |
+| Juggernog | 저거너그 | 음역 + 영문 표기 병기 |
+| Speed Cola | 스피드 콜라 | 음역 + 영문 표기 병기 |
+| Double Tap | 더블 탭 | 음역 + 영문 표기 병기 |
+| Quick Revive | 퀵 리바이브 | 음역 + 영문 표기 병기 |
+| Waffenfabrik | 바펜파브릭 | 음역 (게임 내 지명) |
+| Dempsey / Nikolai / Takeo / Richtofen | 덤프시 / 니콜라이 / 다케오 / 리히토펜 | 음역 |
+| Tank / Pilot / Scientist 역할 | 그대로 음역 — 캐릭터 카드에 영문 표기 병기 |
+| Round / Match / Game | 라운드 / 경기 / 게임 | 의미 |
+| Cheat codes (TITAN MODE 등) | 치트 코드 (타이탄 모드) | 의미 |
+
+### 식별자 보존
+
+게임 로직에서 사용하는 ID는 **변경하지 않습니다** — `m1911`, `raygun`, `dempsey` 같은 식별자는 그대로 두었습니다.
+표시 이름만 KO dict에서 lookup합니다. `displayName(id)` 헬퍼가 한 곳에서 처리:
+
+```js
+export function displayName(id) {
+  if (!id) return '';
+  return t(`wpn${id[0].toUpperCase()}${id.slice(1)}`);
+}
+```
+
+이렇게 하면 게임 로직이 `WEAPONS['m1911']`을 찾을 때 ID 자체는 동일하게 작동합니다.
+
+## 기술 스택
 
 | | |
 |---|---|
-| **Modes** | Solo + four-player online co-op |
-| **Arsenal** | 31 weapons — wall buys, Mystery Box, wonder weapons |
-| **Systems** | Perks, power, traps, teleporters, Pack-a-Punch |
-| **Extras** | In-game voice chat, character select, custom loadouts, cheat codes |
+| **Runtime** | Three.js (vendored), PeerJS (vendored), GLTFLoader (vendored) |
+| **Modules** | ES modules + import map (no bundler) |
+| **Audio** | 320개 SFX + 70 voice lines (ElevenLabs) |
+| **Build output** | 정적 HTML/JS/CSS/assets — 빌드 단계 없음 |
+| **Pages deploy** | GitHub Pages `gh-pages` 분기 → static serve |
 
-Co-op runs peer-to-peer over [PeerJS](https://peerjs.com) with a short lobby code or invite link — no server, no account, no sign-up. Up to four players with voice chat, revives, shared objectives, and a scoreboard.
-
-## Controls
-
-Desktop browser, keyboard and mouse. Click into the battlefield to capture the pointer; press `Esc` to pause or release it.
-
-| Input | Action |
-|---|---|
-| `WASD` | Move through the factory |
-| `Mouse` | Look and aim |
-| `LMB` / `RMB` `E` | Fire / aim down sights |
-| `R` `I` | Reload / inspect weapon |
-| `1` `2` `Q` | Select or swap weapons |
-| `F` | Buy, rebuild, revive, interact |
-| `V` `G` `X` | Knife / grenade / Monkey Bomb |
-| `Shift` `Space` `C` | Sprint / jump / crouch |
-| `T` `Tab` `Esc` | Flashlight / scoreboard / pause |
-
-**First-round advice:** knife the early zombies while they're weak, repair boards for spare points, and don't open every route at once. Find the power switch before committing to perks. In co-op, stay within revive distance — but leave enough room to train the horde when the floor gets crowded.
-
-## Running locally
-
-There is no build step and no dependency install. Serve the repository root over any static web server:
+## 설치 및 실행
 
 ```bash
+# 1. 클론
+git clone https://github.com/sigco3111/der-koloss-ce.git
+cd der-koloss-ce
+
+# 2. 의존성 — 없음 (vendored)
+# three.module.js, peerjs.min.js, loaders/ 모두 vendor/ 디렉토리에 포함
+
+# 3. 정적 서버로 서빙
 python3 -m http.server 8000
-```
-
-Then open `http://localhost:8000`. Opening `index.html` as a `file://` URL will **not** work — ES modules and the import map require a real HTTP origin.
-
-Any static server works equally well:
-
-```bash
+# 또는
 npx serve .
+
+# 4. 브라우저에서 열기
+open http://localhost:8000
 ```
 
-### Routes
+## 배포 (GitHub Pages)
 
-| Path | Page |
-|---|---|
-| `/` | Menu and game |
-| `/about` | About the project |
-| `/assets` | Asset archive — audio catalog and animated armory models |
+이 포크는 master의 **빌드 단계 없이 그대로**를 gh-pages 분기에 push하여 GitHub Pages가 정적 호스팅합니다.
+`vite 흰화면 함정`이 없습니다 — no bundler이므로 옛 hash 박히는 문제 자체가 발생하지 않습니다.
 
-## How it was made
+### 4단계 결정 검증 (배포 후 실제로 통과한 항목)
 
-Almost nothing in Der Koloss was modeled in advance.
-
-The factory itself — every wall, stair, catwalk, and doorway — along with all 31 weapons, the Pack-a-Punch, the perk machines, the mystery box, the teleporters, the hellhounds, and the night sky over the courtyard, is **generated from code at runtime**: a few hundred primitives, lathed, extruded, merged, and surfaced by shaders written for this project. There is no model library sitting behind any of it.
-
-The exceptions are worth naming precisely, and they're small: two CC0 zombie meshes provide the only rigged skeleton in the game — the horde, the player, and the four co-op soldiers all move on it — plus two blood decals and six CC0 surface textures. Every other texture, from machined gunmetal to the chalk sketches on the wall buys, is drawn onto a canvas as the game loads. Every sound effect and voice was generated with ElevenLabs.
-
-### Two versions
-
-It exists in two versions, and both are still visible in the design.
-
-**Version 1** established the whole game — the map, the rounds, the arsenal, the perks, the co-op. It was written with Kimi K3 as the model and OpenCode as the harness.
-
-**Version 2** changed no room, no round, and no rule. It kept every system and rebuilt what you see and hear on top of them: the rendering, the models, the movement, and the mix. It was built with Claude Opus 5 inside Claude Code. `RENDERING.md` documents that overhaul in detail.
-
-## Rendering
-
-Version 1 played correctly and looked like a prototype. Version 2 is why it doesn't anymore. The short version: **the forward renderer no longer draws to the screen.** `js/render/PostFX.js` owns the frame, and everything below happens between the world pass and your monitor.
-
-```
-world  ──► sceneRT (RGBA16F, 4× MSAA, float depth texture)
-             │
-             ├─► SAO ambient occlusion (½ res) ─► depth-aware bilateral blur
-             ├─► volumetric raymarch (½ res, shadow-mapped moon + 4 practicals)
-             └─► depth
-             ▼
-        resolve: colour × AO, + in-scattered light, bilateral upsample
-             ▼
-        screen-space reflections (puddle mask only)
-             ▼
-        camera motion blur (depth reprojection vs. previous view-projection)
-             ▼
-        depth of field (ADS / cinematic)
-             ▼
-        VIEWMODEL PASS  ◄── own camera, own FOV, own depth buffer
-             ▼
-        bloom: soft-knee prefilter ─► 6-mip Karis downsample ─► tent upsample
-             ▼
-        composite: chromatic aberration, CAS sharpen, bloom + lens dirt,
-                   exposure, AgX tonemap, lift/gamma/gain grade, damage
-                   vignette, film grain, linear→sRGB
-             ▼
-        FXAA ─► backbuffer
-```
-
-A few decisions do most of the heavy lifting:
-
-**The forward pass is linear.** Tone mapping is off in three.js and the scene renders into a half-float buffer. Exposure, colour conversion, and grading all happen in the composite, against real HDR values rather than already-clipped ones.
-
-**AgX, not ACES.** Highlights desaturate toward white instead of clipping to a hue. That single choice is most of why muzzle flashes and sodium lamps read like film instead of like blown-out video.
-
-**The viewmodel is its own pass.** It renders on a separate layer with a fixed 75° lens, its own near/far range, and its own depth buffer — after every depth-consuming pass. So your weapon receives bloom, grading, grain, and AA, but contributes nothing to ambient occlusion, volumetrics, motion blur, or depth of field. A gun welded to the camera should not smear when you turn, or darken the screen with its own occlusion. Because the viewmodel no longer has to fit in front of the world's near plane, that plane moved from 0.05 to 0.15 — a **3× depth-precision gain** that every depth-based pass above reads from.
-
-### Motion blur, camera, and feel
-
-The motion blur is **camera reprojection**: each pixel's depth is unprojected to a world position, reprojected through the previous frame's view-projection matrix, and the screen-space delta becomes the blur vector. It responds to how you actually move the camera, not to a global velocity constant.
-
-`js/render/CameraRig.js` produces the rest of the feel as local-frame offsets: stride-locked view bob, mouse-lag sway, strafe and sprint roll, a landing spring, slide dip, breathing that quickens as you take damage, and a recoil kick that is a **separate spring from the aim pitch** — so recoil recovers to where you were aiming, not to where the recoil left you.
-
-Those springs use the closed-form critically-damped solution rather than explicit Euler integration. That is not premature elegance: the explicit form goes unstable when `2·ω·dt > 1`, which for the recoil spring is any frame slower than ~44 fps — at which point the camera detonates into a spin. `scripts/validate-movement-feel.mjs` guards it.
-
-### Materials, textures, and the war on shimmer
-
-Every surface material extends `MeshStandardMaterial` through `onBeforeCompile` with three world-space layers: a **triplanar detail normal** at metre-scale tiling so surfaces keep relief at any UV density, **macro variation** that breaks visible texture repeat at distance, and a **wetness** layer — a two-frequency puddle mask that darkens albedo, flattens the normal, and drops roughness on up-facing surfaces low in the world.
-
-Most of the work, though, went into *not* shimmering. Aliasing was the single biggest thing separating this from looking AAA, and it got fought at three levels:
-
-- **Geometric specular antialiasing** — roughness is widened by the screen-space variance of the normal, which stops glossy surfaces sparkling under point lights.
-- **Normal-map LOD** — the shader measures each pixel's world footprint (`fwidth` of world position, which blows up at grazing incidence, exactly where the artifact lives) and fades normal perturbation toward the geometric normal once one pixel covers more relief than it can resolve.
-- **Band-limiting at the source** — filtering cannot save a normal map whose height field has one-texel cliffs, because the mip chain averages normals and three.js renormalises them. Every generated height field is box-blurred before its Sobel.
-
-That last one was measured, not guessed: the blur took **32% off the shimmer** at the bridge doorway, against the 39% available from deleting the prop normal maps outright. And pushing specular-AA strength from 2 → 8 → 24 made the same doorway monotonically *worse*, because the screen-space derivative of an already-aliasing normal is itself an aliasing signal. Band-limit first, filter the residue second.
-
-### Lighting and level art
-
-The sky is procedural — gradient with horizon haze, a moon disc with limb darkening and a two-lobe halo, drifting stratus, hash-based stars — baked once through `PMREMGenerator` into `scene.environment`, which is where every material gets its ambient and specular. The moon's shadow box follows the player in a tight 34 m frustum and **snaps its centre to the shadow map's texel grid**; that snapping is what stops the crawling stair-step shimmer as you walk.
-
-There are ~68 authored point lights in the map and nowhere near that many real ones. `js/render/LightPool.js` mirrors the best few onto a fixed pool, and the four nearest lit ones are fed into the volumetric raymarch each frame.
-
-The factory is dressed from a **seeded PRNG**, so the layout is identical every session: crates, drums, pallets, sandbags, rubble, pipe runs, ducts, I-beams, cable catenaries, chains, machines, workbenches, spools, a wrecked truck, and an overhead crane — merged down into a handful of draw calls. Solid props register real colliders, which makes decoration a gameplay concern, so every candidate position is tested against a keep-clear list built from the interactables, doors, window barriers, wall-buys, perk machines, teleporters, mystery box locations, and the spawn.
-
-Particles are a shader-backed pool with per-particle size, rotation, and colour/alpha ramps, split into additive (sparks, fire) and alpha-blended (smoke, dust, blood) emitters. `js/fx.js` builds surface-aware bullet impacts on top — concrete, metal, wood, dirt, and glass each get their own dust plume, ejecta, sparks, and decal — plus oriented bullet-hole and blood decals, a layered muzzle flash with a real light, camera-facing tracers with a hot core, tumbling brass, and explosions with a fireball, ember shrapnel, a smoke column, and a ground dust ring.
-
-## Sound
-
-320 audio files. Every sound effect and every character voice was generated with [ElevenLabs](https://elevenlabs.io), then put through a Python DSP pipeline that lives in [`scripts/audio/`](scripts/audio) — because raw generated audio, however good, does not arrive as a coherent game mix.
-
-### The problem with raw generation
-
-The shipped library started out spanning **33.5 dB** of max-momentary loudness, with eleven files exceeding 0 dBTP. Individually fine; collectively unusable. A mix ladder has to be deliberate, so `normalise_library.py` assigns every family its own LUFS target and a true-peak ceiling of −1.0 dBTP:
-
-| Family | Target | Why |
+| # | 검증 | 결과 |
 |---|---|---|
-| Blasts | −15.5 LUFS | top of the ladder |
-| Announcer | −17.0 | above the fight, never buried |
-| Stingers | −17.5 | round transitions cut through |
-| Voices (player + zombie) | −19.0 | intelligible over gunfire |
-| UI | −20.0 | present, not intrusive |
-| Foley | −21.0 | reload, bolt, inspect |
-| Impacts | −22.0 | |
-| Ambience | −23.0 | the bed, never the subject |
-| Footsteps | −25.0 | |
-| Casings, hit confirm | −26.0 | see below |
+| 1 | `gh api .../pages/builds/latest` → status=built | ✅ built (commit `7435b3cf`) |
+| 2 | `curl -sI https://sigco3111.github.io/der-koloss-ce/` → HTTP 200 | ✅ 200, 47,463 bytes |
+| 3 | `curl ... | grep -c 'lang="ko"'` → ≥ 1 | ✅ 1 |
+| 4 | KO 다중어절이 라이브 bundle에 박힘 | ✅ 분더바펜 5건, 팩어펀치 6건, 순간이동기 5건, 원숭이 폭탄 4건 등 |
+| + | og:locale = `ko_KR` | ✅ |
+| + | canonical = fork URL | ✅ |
+| + | JSON-LD `inLanguage` = `ko` | ✅ |
+| + | 한자 0건 (전체 소스) | ✅ |
 
-The hit-confirmation tick earns its own note in the source: it isn't a UI one-shot, it fires on *every bullet that connects*, several times a second — so it has to sit far enough under the gun that a sustained burst doesn't turn into a tick track.
+### 강제 새로고침 안내
 
-### Making the guns crack
+GitHub Pages의 캐시 때문에 새 배포가 늦게 반영될 수 있습니다.
+`Ctrl+Shift+R` (또는 `Cmd+Shift+R`)로 강제 새로고침하세요.
 
-All 64 gunshot files were originally "a single flattish burst of noise." Several had up to **60 ms of leading silence** before the shot, and most Pack-a-Punch variants plateaued for half a second instead of decaying — so the loudest 10 ms sat well *after* the trigger pull. Nothing cracked.
+## 한계 및 알려진 이슈
 
-`design_shots.py` runs every one through four stages:
+### 의도된 보존
 
-1. **Align** — drop the pre-roll so the transient lands on sample 0.
-2. **Shape** — impose a two-stage decay envelope (attenuate-only, capped at 18 dB) so the file peaks at the front and falls into a tail.
-3. **Layer** — add a designed transient on top of the recording: a bandpassed-noise `crack` with sub-millisecond attack, a low-passed `body` punch, a pitched downward `drop` glide for the muzzle thump, a `sub` for chest weight, and one early-reflection `slap`.
-4. **Master** — normalise on max-momentary loudness, then the true-peak ceiling.
+- **EN 원본 메뉴 구조는 그대로** — KO로 번역하되 화면/버튼 위치/동작은 1:1 보존
+- **인게임 영어 음성 대사 (LINES, 70 lines)** — 캐릭터별 음성 디자인은 원작 그대로 유지 (예: "Ooh-rah!", "Vodka first. Then war."). 한글 자막 추가 안 함.
+- **에셋 38MB 그대로** — 오디오, 텍스처, 메시 모두 원본 (MIT가 아닌 자산은 `NOTICE.md` 참고)
+- **게임 �런스 / 메카닉 / 맵** — 미변경
+- **LICENSE** — 원본 MIT 텍스트 그대로 (Copyright (c) 2026 Vesper Tech, Inc.)
 
-Each of the ten weapon classes gets its own parameters, so a pistol still sounds nothing like a Browning — a bolt-action's crack sits at 2600 Hz with a 620 ms tail, an SMG's at 3500 Hz with 220 ms. Class loudness is then offset deliberately: SMG −1.0 dB through shotgun +1.4 to launcher +2.5, so the ladder from SMG to rocket launcher is a decision rather than an accident of generation.
+### 알려진 한계
 
-These layers are sized to sit *under* what the engine adds live, not to replace it.
+- **assets 디렉토리 38 MB 그대로 push** — gh-pages 분기 사이즈가 큽니다. clone은 느릴 수 있지만 Pages는 정상 작동
+- **Treyarch 노래 1곡 (Beauty of Annihilation)** fan tribute 자산 — MIT이 아닌 비-오픈소스 자산이 라이브에 노출됨. 이는 upstream과 동일한 동작
+- **Voice lines는 영문 유지** — 한국어 음성 대사는 제작되지 않았으므로 캐릭터 인격은 영어 음성으로 보존
+- **about 페이지 본문은 영문 유지** — 팬 트리뷰트의 스토리 자체는 원작자가 작성한 영문 콘텐츠. UI(네비, 라벨)만 KO화
+- **번역 일관성** — 일부 게임 용어는 음역/의역 사이에서 일관되게 선택했으나, 향후 한국어 통용 음역이 확정되면 업데이트 가능
+- **lang 플리퍼 없음** — 기본이 KO. EN으로 돌아가려면 `i18n.js`의 `initKorean()` 라인을 `setLanguage('en')`로 변경 후 push
 
-### The engine on top
+### 알려지지 않은 미번역 가능성
 
-`js/audio.js` and `js/audio/*` add, at play time: procedurally generated **convolution reverb per map zone**, geometry-derived **occlusion** with a throttled cache, distance rolloff with air-absorption low-pass, layered gunshots (sample + sub thump + reverb tail + action clack, with distinct last-round and first-of-burst treatments), a compressed and limited master bus with voice/explosion ducking and a concussion ring, low-health tinnitus and heartbeat, surface-aware two-part footsteps, and an ambience bed that scales with the round.
+`bundle-grep`과 `lang="ko"` 검증은 통과했지만, 다음과 같은 케이스는 발견 시 패치됩니다:
 
-Shell casings are their own system — `design_casings.py` and `js/audio/casings.js` — because brass hitting concrete is a different sound from brass hitting dirt, and you hear it a few hundred times a round.
+1. **HTML 모듈 �플릿 리터럴** — `Mouse.ts`의 `PROMPT_INVITE`처럼 모듈-레벨 상수에 박힌 EN 문자열
+2. **`notice(...)` 호출의 인라인 보간** — `notice(\`Could not ${action}\`)` 같은 형식
+3. **runtime throw 메시지** — `throw new Error('Invalid state: ' + state)` 같은 디버그 메시지
 
-### Voice design
+이런 종류의 누락은 headless DOM 프로브로 발견되며, 발견되면 i18n.js에 키를 추가하고 t()로 감�니다.
 
-70 voice lines across the four soldiers, plus 22 zombie and hellhound vocalisations.
+## 라이선스 및 크레딧
 
-The four performances aim to recover the immediately recognisable energy of the classic crew — Dempsey's abrasive bravado, Nikolai's thunderous humour, Takeo's restraint, and Richtofen's gleeful instability — through ElevenLabs Voice Design, with barks written in each character's spirit rather than transcribed from anywhere. Each has round calls, revive lines, Pack-a-Punch remarks, wonder-weapon discoveries, and hurt reactions.
+### 원본
 
-They are original AI-generated performances made for this fan project, written to evoke the characters without presenting themselves as official recordings.
+- **저작자**: [Vesper](https://vesper.inc/) (Vesper Tech, Inc.)
+- **저장소**: [github.com/rishipr/der-koloss-ce](https://github.com/rishipr/der-koloss-ce)
+- **LICENSE**: MIT (Copyright (c) 2026 Vesper Tech, Inc.) — [`LICENSE`](LICENSE) 그대로 보존
+- **음성 디자인**: ElevenLabs
+- **CC0 자산**: Quaternius (좀비 메시), ambientCG (표면 텍스처)
+- **Treyarch 노래 1곡**: fan tribute — [`NOTICE.md`](NOTICE.md) 참고
 
-### Keeping it honest
+### 변경 파일 (12개)
 
-`manifest.py` measures the actual shipped files and emits `scripts/audio-loudness.json`; `scripts/validate-audio-loudness.mjs` pins against it. The manifest is generated from what is really in `assets/audio`, never written by hand — so a re-generated sound that quietly lands 6 dB hot fails a validator instead of surprising a player.
+- **신규**: `js/i18n.js`
+- **패치**: `js/hud.js`, `js/main.js`, `js/game.js`, `js/weapons.js`, `js/personas.js`, `js/assets-page.js`, `index.html`, `about/index.html`, `assets/index.html`, `cinematic.html`, `404.html`, `README.md`
 
-## Multiplayer
+### 이 포크
 
-Up to four players, peer-to-peer over **WebRTC** via [PeerJS](https://peerjs.com), with in-game voice chat. No game server, no account, no matchmaking — you get a short lobby code or an invite link.
+- **저작자**: sigco3111 (한글화)
+- **저장소**: [github.com/sigco3111/der-koloss-ce](https://github.com/sigco3111/der-koloss-ce)
+- **라이브**: [sigco3111.github.io/der-koloss-ce](https://sigco3111.github.io/der-koloss-ce)
+- **방법론**: localized-fork 스킬 — Hermes Agent 프로파일 `korean-fork`
 
-### Topology
+---
 
-Data is **host-authoritative in a star**: the host runs the lobby and the entire zombie simulation, and clients send inputs and hit claims. Each peer gets **two data channels** — one reliable and ordered for events, one unreliable and unordered for snapshots. State that must not be lost travels on the first; snapshots go out at 15 Hz on the second, where head-of-line blocking would hurt more than a dropped packet that is superseded 66 ms later anyway.
+<div align="center">
 
-Voice is a **full mesh** instead, since routing audio through the host would add a hop of latency and make the host's uplink the bottleneck. Each pair calls exactly once, with the caller chosen deterministically by comparing peer IDs — a detail that quietly prevents the classic glare bug where both sides dial simultaneously and end up with two half-open calls.
+[🎮 라이브 게임 플레이](https://sigco3111.github.io/der-koloss-ce/) ·
+[📂 원본 저장소](https://github.com/rishipr/der-koloss-ce) ·
+[📖 프로젝트 소개](https://sigco3111.github.io/der-koloss-ce/about/) ·
+[🎵 에셋 자료실](https://sigco3111.github.io/der-koloss-ce/assets/) ·
+[🚨 404 페이지](https://sigco3111.github.io/der-koloss-ce/404.html) ·
+[� MIT LICENSE](https://github.com/sigco3111/der-koloss-ce/blob/main/LICENSE)
 
-### Trusting nothing from the wire
-
-Everything arriving from a peer is untrusted, so `js/multiplayer-contracts.js` is a pure, separately-testable module of validation rules:
-
-- **Payload bounds** — max 512 nodes, depth 5, strings ≤160 chars, arrays ≤64, numbers finite and ≤1e7. PeerJS has already done the structured-clone allocation by delivery time, but this caps traversal work before anything reaches a hot path.
-- **Snapshot schema** — player positions bounded to the actual world volume, pitch to ±π/2, at most 4 players and 40 zombies, every zombie a 9-element all-finite tuple.
-- **Event authority** — two explicit sets separate what a *client* may send from what only a *host* may. A guest cannot announce that the power is on; it can only request it.
-- **Rate limits** — per-event-type minimum intervals. `power_req` once a second, `door_req` twice, `shoot` at 25 ms. Hit claims (`zhit`) are deliberately *not* spaced, because one shotgun blast legitimately emits several in the same task — the global packet cap and host claim budgets provide the abuse bound instead, and spacing them was discarding valid pellets.
-
-Because the module is pure, all of it runs in Node under `scripts/test-multiplayer-contracts.mjs` and `scripts/validate-host-guest-combat.mjs` without a browser or a second machine.
-
-### Staying connected
-
-Heartbeats every 5 s, a 20 s peer timeout, and a sweep every 5 s prune peers that vanish without closing — the common case when someone closes a laptop lid. Clients carry a stable ID in `localStorage`, so a reconnecting player reclaims their lobby slot instead of appearing as a duplicate.
-
-### Voice chat
-
-Capture requests echo cancellation, noise suppression, and auto gain control, mono, 48 kHz ideal, with `contentHint = 'speech'` so the browser's encoder optimises for voice rather than music. Each stream gets a Web Audio analyser feeding the "who is talking" indicators in both the lobby and the in-game HUD.
-
-Voice peers are authorised independently of media: a peer must be authenticated, have an open reliable channel, and appear in the current lobby roster before its call is answered — so a stranger who learns a peer ID cannot open a microphone stream into someone's game.
-
-## Repository layout
-
-```
-index.html          Menu, game shell, import map
-js/                 Game source (ES modules, no bundler)
-  game.js             Engine: rounds, economy, interactions
-  main.js             Menu, lobby, boot
-  weapons.js          The 31-weapon catalog
-  map.js              Factory layout and geometry
-  map-props.js        Procedural prop placement
-  zombies.js          Spawn director and horde AI
-  net.js              Peer-to-peer co-op
-  props/              Mystery box, perk machines, Pack-a-Punch, teleporters
-  render/             Shaders, post-FX, camera rig, creature shading
-  audio/              Mixing, occlusion, ambience, impulse responses
-vendor/             Three.js, PeerJS, GLTFLoader (vendored, unmodified)
-assets/             Audio, models, textures, fonts, portraits
-scripts/            27 headless validators
-about/  api/        About page; invite-link OG metadata
-```
-
-## Validators
-
-The project has no unit tests. It has **27 headless validators** that assert gameplay and rendering invariants — things that are expensive to rediscover once broken: control-key collisions, camera-spring stability, allocation budgets in the collision and particle hot paths, coplanar geometry, spawn sources, shot occlusion, weapon model integrity, and host/guest combat agreement.
-
-Run them all:
-
-```bash
-for f in scripts/*.mjs; do node "$f" || exit 1; done
-```
-
-`validate-game-invariants.mjs` is the broadest. See `AGENTS.md` for the deployment guardrails they enforce.
-
-## Credits and asset licensing
-
-**The MIT license covers the source code only.** Assets carry their own terms — see [`NOTICE.md`](NOTICE.md) for the full breakdown, and check it before you redistribute.
-
-| Asset | Source | Terms |
-|---|---|---|
-| Zombie meshes (2 variants), blood decals | [Quaternius](https://quaternius.com) | CC0 |
-| Brick, concrete, rusted metal, wood, diamond plate, dirt textures | [ambientCG](https://ambientcg.com) | CC0 |
-| Special Elite, Staatliches typefaces | Google Fonts | OFL — see `assets/fonts/LICENSE.txt` |
-| Three.js, PeerJS, GLTFLoader | Vendored in `vendor/` | MIT / respective licenses |
-| All sound effects, voice design, character performances | Generated with [ElevenLabs](https://elevenlabs.io) | Original to this project |
-| All other geometry, textures, shaders, UI | Written for this project | MIT with the code |
-| **"Beauty of Annihilation"** | **Kevin Sherwood & Elena Siegman** | **Activision / Treyarch — not ours, not MIT, included as fan tribute** |
-
-The four voice performances are original AI-generated recordings written for this fan project. They are intended to evoke the spirit of the characters and are **not** official recordings or impersonations presented as genuine.
-
-## Legal
-
-Der Koloss is an unofficial, non-commercial fan project. It is **not affiliated with, endorsed by, or associated with Activision Publishing, Inc. or Treyarch**.
-
-*Call of Duty*, *Der Riese*, Pack-a-Punch, the perk names, and the characters Tank Dempsey, Nikolai Belinski, Takeo Masaki, and Edward Richtofen are trademarks and/or copyrights of their respective owners. All such rights belong to those owners. This project is a tribute, released freely, with no claim to any of it.
-
-The map is not a scene-for-scene remake — it is an original browser interpretation of that classic factory fantasy.
-
-## License
-
-**Source code:** [MIT](LICENSE), by [Vesper](https://vesper.inc).
-
-**Assets:** not MIT. A mix of CC0, OFL, and third-party material — including one copyrighted song that is not ours to license. See [`NOTICE.md`](NOTICE.md) before redistributing anything under `assets/`.
+</div>
