@@ -1,15 +1,5 @@
-node_modules
+node_modules/
+dist/
+.omo/
+.aider*
 .DS_Store
-.vercel
-
-# Local environment configuration. `.env.example` is the tracked template;
-# a real `.env` must never be committed.
-.env
-.env.*
-!.env.example
-
-# Agent scratch/debug pages (see .vercelignore). Belt and braces: these must
-# neither be committed nor deployed.
-__*.html
-_*.html
-soldiers.html
