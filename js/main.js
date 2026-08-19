@@ -229,7 +229,7 @@ function buildWeaponPickers() {
         const b = document.createElement('button');
         b.className = 'wpn-item' + (visibleCheats().loadout?.[slot] === w.id ? ' sel' : '');
         b.disabled = cheatsReadOnly();
-        b.innerHTML = `${w.name}<span class="cls">${w.cls.toUpperCase()}</span>`;
+        b.innerHTML = `${w.name}<span class="cls">${t(CLS_LBL[w.cls])}</span>`;
         b.addEventListener('click', () => {
           if (cheatsReadOnly()) return;
           audio.play('ui');
