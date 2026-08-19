@@ -2665,7 +2665,7 @@ export class Game {
           this.rebuildBoard(barrier);
         }
       } else this.holdF = 0;
-      this.hud.prompt(`Hold <b>F</b> — rebuild barrier <span class="pts">+10</span>`, this.holdF / 0.4);
+      this.hud.prompt(t('promptRebuildBarrier'), this.holdF / 0.4);
       return;
     }
 
@@ -2692,7 +2692,7 @@ export class Game {
         if (it.door.id === 'd_pap') {
           return this.teleLinks >= 3 ? null : { text: t('promptDoorSealed') };
         }
-        return { text: `Press <b>F</b> — open door ${pts(it.door.cost)}`, hold: null };
+        return { text: t('promptDoorOpen').replaceAll('{pts}', pts(it.door.cost)), hold: null };
       }
       case 'wallbuy': {
         const wb = it.wb;
@@ -2701,24 +2701,24 @@ export class Game {
         if (owned) {
           const cost = Math.floor(wb.price / 2);
           const full = owned.reserve >= s.reserve;
-          return full ? { text: `${s.name} — ammo full` } : { text: `Press <b>F</b> — buy ammo ${pts(cost)}` };
+          return full ? { text: t('promptAmmoFull').replaceAll('{name}', s.name) } : { text: t('promptBuyAmmo').replaceAll('{pts}', pts(cost)) };
         }
-        return { text: `Press <b>F</b> — buy ${s.name} ${pts(wb.price)}` };
+        return { text: t('promptBuyWeapon').replaceAll('{name}', s.name).replaceAll('{pts}', pts(wb.price)) };
       }
       case 'perk': {
         const perk = it.perk;
         if (p.perks.has(perk.id) || this.localPerkDrink) return null;
-        if (perk.id !== 'qr' && !this.map.power.on) return { text: `${perk.name} — no power` };
+        if (perk.id !== 'qr' && !this.map.power.on) return { text: t('promptPerkNoPower').replaceAll('{name}', perk.name) };
         if (perk.id === 'qr' && this.mode === 'solo') {
           if (this.qrSelfRevives <= 0) return { text: t('promptQrDepleted') };
-          return { text: `Press <b>F</b> — Quick Revive ${pts(500)} <span class="dim">(${this.qrSelfRevives} left)</span>` };
+          return { text: t('promptBuyQr').replaceAll('{pts}', pts(500)).replaceAll('{n}', String(this.qrSelfRevives)) };
         }
-        return { text: `Press <b>F</b> — ${perk.name} ${pts(perk.price)}` };
+        return { text: t('promptBuyPerk').replaceAll('{name}', perk.name).replaceAll('{pts}', pts(perk.price)) };
       }
       case 'box': {
         const bs = this.boxState;
-        if (bs.state === 'idle') return { text: `Press <b>F</b> — mystery box ${pts(950)}` };
-        if (bs.state === 'ready') return { text: `Press <b>F</b> — take ${getStats(bs.weapon, false).name}` };
+        if (bs.state === 'idle') return { text: t('promptMysteryBox').replaceAll('{pts}', pts(950)) };
+        if (bs.state === 'ready') return { text: t('promptMysteryTake').replaceAll('{name}', getStats(bs.weapon, false).name) };
         return { text: '…' };
       }
       case 'pap': {
@@ -2726,8 +2726,8 @@ export class Game {
         if (this.papState.busy) return { text: this.papState.ready && this.papState.owner === p.id ? t('promptPapTakeUpgraded') : t('promptPapUpgrading') };
         // Offering an upgrade you cannot buy is a worse prompt than no prompt:
         // the player presses F, nothing happens, and the machine looks broken.
-        if (p.weapon?.pap) return { text: `${getStats(p.weapon.id, true).name} is already upgraded` };
-        return { text: `Hold <b>F</b> — Pack-a-Punch ${pts(5000)}`, hold: 0.4 };
+        if (p.weapon?.pap) return { text: t('promptPapAlready').replaceAll('{name}', getStats(p.weapon.id, true).name) };
+        return { text: t('promptPapBuy').replaceAll('{pts}', pts(5000)), hold: 0.4 };
       }
       case 'power': {
         if (this.map.power.on) return null;
@@ -2738,15 +2738,15 @@ export class Game {
         const state = teleporterPromptState({ powerOn: this.map.power.on, charging: t.charging, cooldown: t.cooldown });
         if (state === 'no-power') return { text: t('promptTelepadNoPower') };
         if (state === 'charging') return { text: t('promptTelepadCharging') };
-        if (state === 'recharging') return { text: `Teleporter recharging… ${Math.ceil(t.cooldown)}s` };
-        return { text: `Hold <b>F</b> — use teleporter`, hold: INTERACT_HOLD.tele };
+        if (state === 'recharging') return { text: t('promptTelepadRecharging').replaceAll('{secs}', String(Math.ceil(t.cooldown))) };
+        return { text: t('promptTelepadUse'), hold: INTERACT_HOLD.tele };
       }
       case 'trap': {
         const t = it.trap;
         if (!this.map.power.on) return { text: t('promptNoPower') };
         if (t.active) return { text: t('promptTrapActive') };
         if (t.cd > 0) return { text: `Trap recharging… ${Math.ceil(t.cd)}s` };
-        return { text: `Press <b>F</b> — activate electro-shock defense ${pts(1000)}` };
+        return { text: t('promptTrapArm').replaceAll('{pts}', pts(1000)) };
       }
       case 'song': {
         return { text: audio.songPlaying ? t('promptStopRecord') : t('promptPlayRecord') };
@@ -4125,7 +4125,7 @@ export class Game {
           this.papState.ready = true;
           this.papState.t = 0;
           audio.play('pap_done', { pos: this.map.pap.pos });
-          if (msg.pid === p.id) this.hud.papNotice('Your weapon is ready');
+          if (msg.pid === p.id) this.hud.papNotice(t('toastPapReady'));
         }
         break;
       }
@@ -4359,7 +4359,7 @@ export class Game {
     if (!this.net) return names;
     this.net.updateVoiceSpeaking();
     for (const [id, vs] of this.net.voiceStreams) {
-      if (vs.speaking && !this.net.mutedPeers.has(id) && names.length < 4) names.push(this.remotePlayers.get(id)?.name || 'TEAMMATE');
+      if (vs.speaking && !this.net.mutedPeers.has(id) && names.length < 4) names.push(this.remotePlayers.get(id)?.name || t('hudPlayer'));
     }
     return names;
   }
